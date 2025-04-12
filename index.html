@@ -14,6 +14,10 @@
         margin-top: 20px;
     }
 
+    .gallery-wrapper {
+        position: relative;
+    }
+
     .gallery img {
         width: 100%;
         height: auto;
@@ -30,6 +34,26 @@
 
     .gallery img.selected {
         border: 3px solid #007bff; /* Highlight selected image */
+    }
+
+    .checkmark {
+        display: none;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 14px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .gallery-wrapper.selected .checkmark {
+        display: flex;
     }
 
     .modal {
@@ -58,6 +82,12 @@
         font-size: 30px;
         color: #fff;
         cursor: pointer;
+    }
+
+    .centered-title {
+        text-align: center;
+        font-size: 24px;
+        margin-top: 20px;
     }
   </style>
 </head>
@@ -96,6 +126,7 @@
       <button type="submit">Submit</button>
     </form>
 
+    <h3 class="centered-title">Pick a reference</h3>
     <section>
       <h3>Banners</h3>
       <div class="gallery" id="banners-gallery">
@@ -139,35 +170,55 @@
 
     // Populate Banner Gallery
     banners.forEach((src, index) => {
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("gallery-wrapper");
+
       const img = document.createElement("img");
       img.src = src;
       img.alt = `Banner ${index + 1}`;
-      img.addEventListener("click", () => selectImage("banner", img, src));
-      bannersGallery.appendChild(img);
+      img.addEventListener("click", () => selectImage("banner", wrapper, src));
+
+      const checkmark = document.createElement("div");
+      checkmark.classList.add("checkmark");
+      checkmark.textContent = "✔";
+
+      wrapper.appendChild(img);
+      wrapper.appendChild(checkmark);
+      bannersGallery.appendChild(wrapper);
     });
 
     // Populate Logo Gallery
     logos.forEach((src, index) => {
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("gallery-wrapper");
+
       const img = document.createElement("img");
       img.src = src;
       img.alt = `Logo ${index + 1}`;
-      img.addEventListener("click", () => selectImage("logo", img, src));
-      logosGallery.appendChild(img);
+      img.addEventListener("click", () => selectImage("logo", wrapper, src));
+
+      const checkmark = document.createElement("div");
+      checkmark.classList.add("checkmark");
+      checkmark.textContent = "✔";
+
+      wrapper.appendChild(img);
+      wrapper.appendChild(checkmark);
+      logosGallery.appendChild(wrapper);
     });
 
-    function selectImage(type, imgElement, src) {
+    function selectImage(type, wrapperElement, src) {
       if (type === "banner") {
         // Deselect previously selected banner
         if (selectedBanner) selectedBanner.classList.remove("selected");
-        selectedBanner = imgElement;
+        selectedBanner = wrapperElement;
         selectedBannerInput.value = src; // Update hidden input
       } else if (type === "logo") {
         // Deselect previously selected logo
         if (selectedLogo) selectedLogo.classList.remove("selected");
-        selectedLogo = imgElement;
+        selectedLogo = wrapperElement;
         selectedLogoInput.value = src; // Update hidden input
       }
-      imgElement.classList.add("selected");
+      wrapperElement.classList.add("selected");
     }
 
     // Form submission handler
@@ -180,8 +231,8 @@
         designType: formData.get("designType"),
         packageType: formData.get("packageType"),
         details: formData.get("details"),
-        selectedBanner: formData.get("selectedBanner"),
-        selectedLogo: formData.get("selectedLogo"),
+        selectedBanner: formData.get("selectedBanner") || "None selected",
+        selectedLogo: formData.get("selectedLogo") || "None selected",
       };
 
       // Send to Discord Webhook
