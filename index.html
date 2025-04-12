@@ -137,33 +137,24 @@
 
     <br>
     <center><h3>Banners</h3></center><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thin Black Line</title>
+  <title>Centered Thin Black Line</title>
   <style>
-    .text-with-line {
-      display: inline-block;
-      position: relative;
-      font-size: 24px; /* Adjust the font size as needed */
-      margin-bottom: 10px; /* Adjust the spacing below the text */
-    }
-
-    .text-with-line::after {
-      content: "";
-      display: block;
-      width: 100%;
-      height: 2px; /* Set the thickness of the line */
-      background-color: black; /* Set the line color */
-      position: absolute;
-      bottom: -5px; /* Adjust the distance between the text and the line */
-      left: 0;
+    .centered-line {
+      width: 50%; /* Adjust the width of the line as needed */
+      height: 2px; /* Thickness of the line */
+      background-color: black; /* Color of the line */
+      margin: 0 auto; /* Centers the line horizontally */
     }
   </style>
 </head>
 <body>
-  <div class="text-with-line">Your Words Here</div>
+  <h1>Example with Centered Line</h1>
+  <div class="centered-line"></div>
 </body>
 </html>
     <div class="gallery" id="banners-gallery"></div>
