@@ -46,45 +46,32 @@
       align-items: center;
       font-size: 14px;
       color: white;
-      pointer-events: none; /* Prevent checkbox from interfering with image click */
+      pointer-events: none;
     }
 
     .gallery-wrapper.selected .checkbox {
-      background-color: #007bff; /* Filled in when selected */
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .modal img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 10px;
-    }
-
-    .modal .close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 30px;
-      color: #fff;
-      cursor: pointer;
+      background-color: #007bff;
     }
 
     .centered-title {
       text-align: center;
       font-size: 24px;
       margin-top: 20px;
+    }
+
+    .dynamic-section {
+      margin-top: 20px;
+    }
+
+    .numeric-input {
+      margin-top: 10px;
+    }
+
+    .remove-button {
+      margin-left: 10px;
+      cursor: pointer;
+      color: red;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -97,24 +84,54 @@
   <main>
     <form id="order-form">
       <h2>Choose Your Options</h2>
-      <label for="design-type">Design Type:</label>
-      <select id="design-type" name="designType" required>
-        <option value="banner">Banner</option>
-        <option value="logo">Logo</option>
-        <option value="calling-card">Calling Card</option>
-        <option value="product-box">Product Box</option>
-      </select>
 
+      <!-- Add/Remove Design Type Dropdowns -->
+      <div id="design-types-container">
+        <label for="design-type-1">Design Type:</label>
+        <select id="design-type-1" name="designType" class="design-type-dropdown" required>
+          <option value="banner">Banner</option>
+          <option value="logo">Logo</option>
+          <option value="calling-card">Calling Card</option>
+          <option value="product-box">Product Box</option>
+        </select>
+      </div>
+      <button type="button" id="add-design-type">Add Design Type</button>
+      <button type="button" id="remove-design-type" style="display: none;">Remove Design Type</button>
+
+      <!-- Numeric Input for Product Boxes -->
+      <div id="product-box-quantity" class="numeric-input" style="display: none;">
+        <label for="box-quantity">Number of Product Boxes:</label>
+        <input type="number" id="box-quantity" name="boxQuantity" min="1">
+      </div>
+
+      <!-- Package Dropdown -->
       <label for="package">Package:</label>
       <select id="package" name="packageType" required>
         <option value="server">Server Package</option>
         <option value="user">User Package</option>
         <option value="website">Website Package</option>
         <option value="all-in-one">All-in-One Package</option>
+        <option value="n/a">N/A</option>
       </select>
 
-      <label for="details">Additional Details:</label>
-      <textarea id="details" name="details" placeholder="Describe your requirements..."></textarea>
+      <!-- New Text Input Fields -->
+      <label for="brand">Brand:</label>
+      <input type="text" id="brand" name="brand" placeholder="Enter your brand">
+
+      <label for="color-scheme">Color Scheme:</label>
+      <input type="text" id="color-scheme" name="colorScheme" placeholder="Enter color scheme">
+
+      <label for="slogan">Slogan for Banner:</label>
+      <input type="text" id="slogan" name="slogan" placeholder="Enter slogan for banner">
+
+      <label for="links">Links (Discord server, store, etc.):</label>
+      <textarea id="links" name="links" placeholder="Enter links"></textarea>
+
+      <label for="extra-info">Extra Information:</label>
+      <textarea id="extra-info" name="extraInfo" placeholder="Enter extra details"></textarea>
+
+      <label for="products">Products for Boxes:</label>
+      <textarea id="products" name="products" placeholder="Enter products for boxes"></textarea>
 
       <!-- Hidden inputs to store selected images -->
       <input type="hidden" id="selected-banner" name="selectedBanner">
@@ -145,76 +162,65 @@
   </div>
 
   <script>
-    const banners = [
-      "https://i.ibb.co/spQrw5DF/44444.gif",
-      "https://i.ibb.co/fzNwqzmL/24.gif",
-      "https://i.ibb.co/zhP7Xmbd/454.gif"
-    ];
+    // Populate Design Type Dropdowns and Handle Product Box Quantity
+    const designTypesContainer = document.getElementById("design-types-container");
+    const addDesignTypeButton = document.getElementById("add-design-type");
+    const removeDesignTypeButton = document.getElementById("remove-design-type");
+    const productBoxQuantity = document.getElementById("product-box-quantity");
 
-    const logos = [
-      "https://i.ibb.co/Y7jLFsBT/4545.gif",
-      "https://i.ibb.co/Z6gHYgYB/456544.gif",
-      "https://i.ibb.co/S4KwKr55/asdfs.gif"
-    ];
+    let designTypeCount = 1;
 
-    const bannersGallery = document.getElementById("banners-gallery");
-    const logosGallery = document.getElementById("logos-gallery");
-    const selectedBannerInput = document.getElementById("selected-banner");
-    const selectedLogoInput = document.getElementById("selected-logo");
+    // Add a new Design Type dropdown
+    addDesignTypeButton.addEventListener("click", () => {
+      designTypeCount++;
 
-    let selectedBanner = null;
-    let selectedLogo = null;
+      const newDropdown = document.createElement("div");
+      newDropdown.id = `design-type-${designTypeCount}`;
+      newDropdown.classList.add("dynamic-section");
+      newDropdown.innerHTML = `
+        <label for="design-type-${designTypeCount}">Design Type:</label>
+        <select id="design-type-${designTypeCount}" name="designType" class="design-type-dropdown" required>
+          <option value="banner">Banner</option>
+          <option value="logo">Logo</option>
+          <option value="calling-card">Calling Card</option>
+          <option value="product-box">Product Box</option>
+        </select>
+      `;
+      designTypesContainer.appendChild(newDropdown);
 
-    // Populate Banner Gallery
-    banners.forEach((src, index) => {
-      const wrapper = document.createElement("div");
-      wrapper.classList.add("gallery-wrapper");
-
-      const img = document.createElement("img");
-      img.src = src;
-      img.alt = `Banner ${index + 1}`;
-      img.addEventListener("click", () => selectImage("banner", wrapper, src));
-
-      const checkbox = document.createElement("div");
-      checkbox.classList.add("checkbox");
-
-      wrapper.appendChild(img);
-      wrapper.appendChild(checkbox);
-      bannersGallery.appendChild(wrapper);
-    });
-
-    // Populate Logo Gallery
-    logos.forEach((src, index) => {
-      const wrapper = document.createElement("div");
-      wrapper.classList.add("gallery-wrapper");
-
-      const img = document.createElement("img");
-      img.src = src;
-      img.alt = `Logo ${index + 1}`;
-      img.addEventListener("click", () => selectImage("logo", wrapper, src));
-
-      const checkbox = document.createElement("div");
-      checkbox.classList.add("checkbox");
-
-      wrapper.appendChild(img);
-      wrapper.appendChild(checkbox);
-      logosGallery.appendChild(wrapper);
-    });
-
-    function selectImage(type, wrapperElement, src) {
-      if (type === "banner") {
-        // Deselect previously selected banner
-        if (selectedBanner) selectedBanner.classList.remove("selected");
-        selectedBanner = wrapperElement;
-        selectedBannerInput.value = src; // Update hidden input
-      } else if (type === "logo") {
-        // Deselect previously selected logo
-        if (selectedLogo) selectedLogo.classList.remove("selected");
-        selectedLogo = wrapperElement;
-        selectedLogoInput.value = src; // Update hidden input
+      // Show the remove button when there's more than one dropdown
+      if (designTypeCount > 1) {
+        removeDesignTypeButton.style.display = "inline-block";
       }
-      wrapperElement.classList.add("selected");
+
+      // Add change event listener for the new dropdown
+      newDropdown.querySelector(".design-type-dropdown").addEventListener("change", handleDesignTypeChange);
+    });
+
+    // Remove the last Design Type dropdown
+    removeDesignTypeButton.addEventListener("click", () => {
+      if (designTypeCount > 1) {
+        document.getElementById(`design-type-${designTypeCount}`).remove();
+        designTypeCount--;
+
+        // Hide the remove button if there's only one dropdown left
+        if (designTypeCount === 1) {
+          removeDesignTypeButton.style.display = "none";
+        }
+      }
+    });
+
+    // Handle Design Type dropdown change
+    function handleDesignTypeChange(event) {
+      if (event.target.value === "product-box") {
+        productBoxQuantity.style.display = "block";
+      } else {
+        productBoxQuantity.style.display = "none";
+      }
     }
+
+    // Add change event listener for the initial Design Type dropdown
+    document.querySelector(".design-type-dropdown").addEventListener("change", handleDesignTypeChange);
 
     // Form submission handler
     document.getElementById("order-form").addEventListener("submit", async (e) => {
@@ -222,13 +228,10 @@
 
       const formData = new FormData(e.target);
 
-      const payload = {
-        designType: formData.get("designType"),
-        packageType: formData.get("packageType"),
-        details: formData.get("details"),
-        selectedBanner: formData.get("selectedBanner") || "None selected",
-        selectedLogo: formData.get("selectedLogo") || "None selected",
-      };
+      const payload = Object.fromEntries(formData.entries());
+      payload.designTypes = Array.from(document.querySelectorAll(".design-type-dropdown")).map(
+        (dropdown) => dropdown.value
+      );
 
       // Send to Discord Webhook
       const webhookUrl = "https://discord.com/api/webhooks/1360451872246337596/-ZSpJdoRwhB6Zg2S3VuhVqw64H4ONuVea6sX1yjtHvba0iAO7zgzDpN1aJUnBnEHAvdl";
