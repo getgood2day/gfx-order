@@ -332,6 +332,340 @@ document.querySelector(".design-type-dropdown").addEventListener("change", handl
     });
 
 
+   <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFX Design Order Form</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .gallery-wrapper {
+      position: relative;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
+      border: 3px solid transparent;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .checkbox {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #007bff;
+      border-radius: 3px;
+      background-color: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      color: white;
+      pointer-events: none; /* Prevent checkbox from interfering with image click */
+    }
+
+    .gallery-wrapper.selected .checkbox {
+      background-color: #007bff; /* Filled in when selected */
+    }
+
+    .dynamic-section {
+      margin-top: 20px;
+    }
+
+    .numeric-input {
+      margin-top: 10px;
+    }
+
+    .remove-button {
+      margin-left: 10px;
+      cursor: pointer;
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>GFX Design Order Form</h1>
+    <p>Fill out the form below to request your design!</p>
+  </header>
+
+  <main>
+    <form id="order-form">
+      <h2>Choose Your Options</h2>
+
+      <!-- Add/Remove Design Type Dropdowns -->
+      <div id="design-types-container">
+        <label for="design-type-1">Design Type:</label>
+        <select id="design-type-1" name="designType" class="design-type-dropdown" required>
+          <option value="banner">Banner</option>
+          <option value="logo">Logo</option>
+          <option value="calling-card">Calling Card</option>
+          <option value="product-box">Product Box</option>
+        <option value="N/A">N/A</option>
+        </select>
+      </div>
+      <button type="button" id="add-design-type">Add Design Type</button>
+      <button type="button" id="remove-design-type" style="display: none;">Remove Design Type</button>
+
+      <!-- Numeric Input for Product Boxes -->
+      <div id="product-box-quantity" class="numeric-input" style="display: none;">
+        <label for="box-quantity">Number of Product Boxes:</label>
+        <input type="number" id="box-quantity" name="boxQuantity" min="1">
+      </div>
+
+      <!-- Package Dropdown -->
+      <label for="package">Package:</label>
+      <select id="package" name="packageType" required>
+        <option value="server">Server Package</option>
+        <option value="user">User Package</option>
+        <option value="website">Website Package</option>
+        <option value="all-in-one">All-in-One Package</option>
+        <option value="n/a">N/A</option>
+      </select>
+
+      <!-- New Text Input Fields -->
+      <label for="brand">Brand:</label>
+      <input type="text" id="brand" name="brand" placeholder="Enter your brand">
+
+      <label for="color-scheme">Color Scheme:</label>
+      <input type="text" id="color-scheme" name="colorScheme" placeholder="Enter color scheme">
+
+      <label for="slogan">Slogan for Banner:</label>
+      <input type="text" id="slogan" name="slogan" placeholder="Enter slogan for banner">
+
+      <label for="links">Links (Discord server, store, etc.):</label>
+      <textarea id="links" name="links" placeholder="Enter links"></textarea>
+
+      <label for="extra-info">Extra Information:</label>
+      <textarea id="extra-info" name="extraInfo" placeholder="Enter extra details"></textarea>
+
+      <label for="products">Products for Boxes:</label>
+      <textarea id="products" name="products" placeholder="Enter products for boxes"></textarea>
+
+      <!-- Hidden inputs to store selected images -->
+      <input type="hidden" id="selected-banner" name="selectedBanner">
+      <input type="hidden" id="selected-logo" name="selectedLogo">
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <h3>Banners</h3>
+    <div class="gallery" id="banners-gallery"></div>
+
+    <h3>Logos</h3>
+    <div class="gallery" id="logos-gallery"></div>
+  </main>
+
+  <div class="modal" id="imageModal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img id="modalImage" src="" alt="Expanded Image">
+  </div>
+
+  <script>
+    const banners = [
+
+    ];
+
+    const logos = [
+  "https://i.ibb.co/Z6gHYgYB/456544.gif",
+  "https://i.ibb.co/S4KwKr55/asdfs.gif",
+  "https://i.ibb.co/YBVJsnzP/GIF-UNDER-10-MB.gif",
+  "https://i.ibb.co/RTrm92nx/LOGO-1.gif",
+  "https://i.ibb.co/ymps6BtW/LOGO-2-1.gif",
+  "https://i.ibb.co/JW5x0Cst/logo.png",
+  "https://i.ibb.co/fdzMHGRN/PFP-1-1.gif",
+  "https://i.ibb.co/JFd8TGm0/PFP-1.gif",
+  "https://i.ibb.co/QjnWV6KS/LOGO-2.gif",
+  "https://i.ibb.co/zV15r2G1/LOGO.gif",
+  "https://i.ibb.co/rRp0GRG9/PFP-5.gif",
+  "https://i.ibb.co/mVRYD8tf/PFP-2-1.gif",
+  "https://i.ibb.co/hJ5bLTDB/PFP-2.gif",
+  "https://i.ibb.co/bMdmxCj1/PFP-3.gif",
+  "https://i.ibb.co/KgPSXFP/PFP-4.gif",
+  "https://i.ibb.co/RG9HCKzB/PFP-6.gif",
+  "https://i.ibb.co/GQcb3Y82/PFP-7.gif",
+  "https://i.ibb.co/Z1HRKQsH/PFP-8.gif",
+  "https://i.ibb.co/KppVcdSm/PFP-SERVER.gif",
+  "https://i.ibb.co/jkqb3KS0/PFP-1.gif",
+  "https://i.ibb.co/FqhnBYVH/PFP-2.gif",
+  "https://i.ibb.co/WWvPtqVs/PFP-3.gif",
+  "https://i.ibb.co/HpxFs2hj/PFP-4.gif",
+  "https://i.ibb.co/5gMbsQrk/PFP-9.gif",
+  "https://i.ibb.co/Hf6fb3HP/PFP-5.gif",
+  "https://i.ibb.co/zTG4tt3m/PFP-6.gif",
+  "https://i.ibb.co/C5ZhdvfD/PFP-7.gif",
+  "https://i.ibb.co/q2yD5pM/PFP-8.gif",
+  "https://i.ibb.co/0pmRz3qQ/PFP-12.gif",
+  "https://i.ibb.co/r2yXPTbh/PFP-11.gif",
+  "https://i.ibb.co/tptVCxCg/PFP-16.gif",
+  "https://i.ibb.co/zWjzyKb2/PFP-17.gif",
+  "https://i.ibb.co/84r1j3HS/pfp-18.gif",
+  "https://i.ibb.co/4R5b70JR/PFP-15.gif",
+  "https://i.ibb.co/yncB9K6T/PFP-23.gif",
+  "https://i.ibb.co/tTxRPbr8/PFP-19.gif",
+  "https://i.ibb.co/cSMzDsfZ/PFP-20.gif",
+  "https://i.ibb.co/m59tYzGG/PFP-21.gif",
+  "https://i.ibb.co/nqgcvzLY/PFP-22.gif",
+  "https://i.ibb.co/ns7LgDvx/PFP-31.gif",
+  "https://i.ibb.co/JwnpXT8R/PFP.gif",
+  "https://i.ibb.co/6cMsZzbj/PFP-2-1.gif",
+  "https://i.ibb.co/q3pn9jJG/PFP3.gif",
+  "https://i.ibb.co/B0x95KP/PFP-30.gif"
+    ];
+
+    const bannersGallery = document.getElementById("banners-gallery");
+    const logosGallery = document.getElementById("logos-gallery");
+    const selectedBannerInput = document.getElementById("selected-banner");
+    const selectedLogoInput = document.getElementById("selected-logo");
+
+    let selectedBanner = null;
+    let selectedLogo = null;
+
+    function selectImage(type, wrapperElement, src) {
+      if (type === "banner") {
+        // Deselect previously selected banner
+        if (selectedBanner) selectedBanner.classList.remove("selected");
+        selectedBanner = wrapperElement;
+        selectedBannerInput.value = src; // Update hidden input
+      } else if (type === "logo") {
+        // Deselect previously selected logo
+        if (selectedLogo) selectedLogo.classList.remove("selected");
+        selectedLogo = wrapperElement;
+        selectedLogoInput.value = src; // Update hidden input
+      }
+      wrapperElement.classList.add("selected");
+    }
+const designTypesContainer = document.getElementById("design-types-container");
+const addDesignTypeButton = document.getElementById("add-design-type");
+const removeDesignTypeButton = document.getElementById("remove-design-type");
+const productBoxQuantity = document.getElementById("product-box-quantity");
+
+let designTypeCount = 1;
+
+// Add a new Design Type dropdown
+addDesignTypeButton.addEventListener("click", () => {
+  designTypeCount++;
+
+  const newDropdown = document.createElement("div");
+  newDropdown.id = `design-type-${designTypeCount}`;
+  newDropdown.classList.add("dynamic-section");
+  newDropdown.innerHTML = `
+    <label for="design-type-${designTypeCount}">Design Type:</label>
+    <select id="design-type-${designTypeCount}" name="designType" class="design-type-dropdown" required>
+      <option value="banner">Banner</option>
+      <option value="logo">Logo</option>
+      <option value="calling-card">Calling Card</option>
+      <option value="product-box">Product Box</option>
+    </select>
+  `;
+  designTypesContainer.appendChild(newDropdown);
+
+  // Show the remove button when there's more than one dropdown
+  if (designTypeCount > 1) {
+    removeDesignTypeButton.style.display = "inline-block";
+  }
+
+  // Add change event listener for the new dropdown
+  newDropdown.querySelector(".design-type-dropdown").addEventListener("change", handleDesignTypeChange);
+});
+
+// Remove the last Design Type dropdown
+removeDesignTypeButton.addEventListener("click", () => {
+  if (designTypeCount > 1) {
+    document.getElementById(`design-type-${designTypeCount}`).remove();
+    designTypeCount--;
+
+    // Hide the remove button if there's only one dropdown left
+    if (designTypeCount === 1) {
+      removeDesignTypeButton.style.display = "none";
+    }
+
+    // Recheck if "Product Box" is still selected after removal
+    handleDesignTypeChange();
+  }
+});
+
+// Handle Design Type dropdown change
+function handleDesignTypeChange() {
+  // Get all design type dropdowns
+  const designTypeDropdowns = document.querySelectorAll(".design-type-dropdown");
+
+  // Check if at least one dropdown is set to "Product Box"
+  const hasProductBox = Array.from(designTypeDropdowns).some(
+    (dropdown) => dropdown.value === "product-box"
+  );
+
+  // Show or hide the numeric input based on the presence of "Product Box"
+  if (hasProductBox) {
+    productBoxQuantity.style.display = "block";
+  } else {
+    productBoxQuantity.style.display = "none";
+  }
+}
+
+// Add change event listener for the initial Design Type dropdown
+document.querySelector(".design-type-dropdown").addEventListener("change", handleDesignTypeChange);
+
+
+    // Populate Banner Gallery
+    banners.forEach((src, index) => {
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("gallery-wrapper");
+
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = `Banner ${index + 1}`;
+      img.addEventListener("click", () => selectImage("banner", wrapper, src));
+
+      const checkbox = document.createElement("div");
+      checkbox.classList.add("checkbox");
+
+      wrapper.appendChild(img);
+      wrapper.appendChild(checkbox);
+      bannersGallery.appendChild(wrapper);
+    });
+// Reset Form On Refresh
+  window.addEventListener("load", () => {
+  document.getElementById("order-form").reset(); // Reset the form to its default state
+});
+    // Populate Logo Gallery
+    logos.forEach((src, index) => {
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("gallery-wrapper");
+
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = `Logo ${index + 1}`;
+      img.addEventListener("click", () => selectImage("logo", wrapper, src));
+
+      const checkbox = document.createElement("div");
+      checkbox.classList.add("checkbox");
+
+      wrapper.appendChild(img);
+      wrapper.appendChild(checkbox);
+      logosGallery.appendChild(wrapper);
+    });
+
+
     document.getElementById("order-form").addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -362,6 +696,9 @@ payload.designTypes = Array.from(document.querySelectorAll(".design-type-dropdow
         alert("An error occurred while submitting the form.");
       }
     });
+  </script>
+</body>
+</html>
   </script>
 </body>
 </html>
