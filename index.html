@@ -224,12 +224,24 @@ removeDesignTypeButton.addEventListener("click", () => {
     if (designTypeCount === 1) {
       removeDesignTypeButton.style.display = "none";
     }
+
+    // Recheck if "Product Box" is still selected after removal
+    handleDesignTypeChange();
   }
 });
 
 // Handle Design Type dropdown change
-function handleDesignTypeChange(event) {
-  if (event.target.value === "product-box") {
+function handleDesignTypeChange() {
+  // Get all design type dropdowns
+  const designTypeDropdowns = document.querySelectorAll(".design-type-dropdown");
+
+  // Check if at least one dropdown is set to "Product Box"
+  const hasProductBox = Array.from(designTypeDropdowns).some(
+    (dropdown) => dropdown.value === "product-box"
+  );
+
+  // Show or hide the numeric input based on the presence of "Product Box"
+  if (hasProductBox) {
     productBoxQuantity.style.display = "block";
   } else {
     productBoxQuantity.style.display = "none";
@@ -288,7 +300,7 @@ document.querySelector(".design-type-dropdown").addEventListener("change", handl
       );
 
       // Send to Discord Webhook
-      const webhookUrl = "https://discord.com/api/webhooks/1360451872246337596/-ZSpJdoRwhB6Zg2S3VuhVqw64H4ONuVea6sX1yjtHvba0iAO7zgzDpN1aJUnBnEHAvdl";
+      const webhookUrl = "YOUR_DISCORD_WEBHOOK_URL";
       await fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
