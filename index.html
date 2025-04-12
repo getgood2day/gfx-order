@@ -150,11 +150,6 @@
 
       <label for="details">Additional Details:</label>
       <textarea id="details" name="details" placeholder="Describe your requirements..."></textarea>
-
-      <h3>Select a Reference</h3>
-      <div id="reference-gallery" class="gallery">
-        <!-- Gallery dynamically populated -->
-      </div>
     </form>
 
     <section>
@@ -170,11 +165,20 @@
         <!-- Placeholder for Banners -->
       </div>
     </section>
+
+    <section>
+      <h3>References</h3>
+      <div id="reference-gallery" class="gallery">
+        <!-- Gallery dynamically populated -->
+      </div>
+    </section>
   </main>
 
   <div class="modal" id="imageModal">
     <span class="close" onclick="closeModal()">&times;</span>
+    <button class="nav-btn left" onclick="prevImage()">&#10094;</button>
     <img id="modalImage" src="" alt="Expanded Image">
+    <button class="nav-btn right" onclick="nextImage()">&#10095;</button>
   </div>
 
   <script>
@@ -192,26 +196,37 @@
     ];
 
     const referenceGallery = document.getElementById("reference-gallery");
+    const modal = document.getElementById("imageModal");
+    const modalImage = document.getElementById("modalImage");
+    let currentIndex = 0;
 
     // Populate Gallery
-    imgbbImages.forEach((src) => {
+    imgbbImages.forEach((src, index) => {
       const img = document.createElement("img");
       img.src = src;
-      img.alt = "Reference Image";
-      img.onclick = () => openModal(src);
+      img.alt = `Reference Image ${index + 1}`;
+      img.onclick = () => openModal(index);
       referenceGallery.appendChild(img);
     });
 
-    const modal = document.getElementById("imageModal");
-    const modalImage = document.getElementById("modalImage");
-
-    function openModal(src) {
-      modalImage.src = src;
+    function openModal(index) {
+      currentIndex = index;
+      modalImage.src = imgbbImages[currentIndex];
       modal.style.display = "flex";
     }
 
     function closeModal() {
       modal.style.display = "none";
+    }
+
+    function prevImage() {
+      currentIndex = (currentIndex > 0) ? currentIndex - 1 : imgbbImages.length - 1;
+      modalImage.src = imgbbImages[currentIndex];
+    }
+
+    function nextImage() {
+      currentIndex = (currentIndex < imgbbImages.length - 1) ? currentIndex + 1 : 0;
+      modalImage.src = imgbbImages[currentIndex];
     }
   </script>
 </body>
