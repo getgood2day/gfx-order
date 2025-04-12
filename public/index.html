@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFX Design Order Form</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>GFX Design Order Form</h1>
+    <p>Fill out the form below to request your design!</p>
+  </header>
+  
+  <main>
+    <form id="order-form" action="/submit-order" method="post" enctype="multipart/form-data">
+      <h2>Choose Your Options</h2>
+      
+      <!-- Design Type -->
+      <label for="design-type">Design Type:</label>
+      <select id="design-type" name="designType" required>
+        <option value="banner">Banner</option>
+        <option value="logo">Logo</option>
+        <option value="calling-card">Calling Card</option>
+        <option value="product-box">Product Box</option>
+      </select>
+
+      <!-- Package -->
+      <label for="package">Package:</label>
+      <select id="package" name="packageType" required>
+        <option value="server">Server Package</option>
+        <option value="user">User Package</option>
+        <option value="website">Website Package</option>
+        <option value="all-in-one">All-in-One Package</option>
+      </select>
+
+      <!-- Additional Details -->
+      <label for="details">Additional Details:</label>
+      <textarea id="details" name="details" placeholder="Describe your requirements..."></textarea>
+
+      <!-- Reference Gallery -->
+      <h3>Select a Reference</h3>
+      <div id="reference-gallery">
+        <!-- Images will be dynamically loaded here -->
+        <!-- Example:
+        <div class="reference-item">
+          <img src="path/to/image1.jpg" alt="Reference 1">
+          <button type="button" class="select-reference" data-reference-id="1">Select This Reference</button>
+        </div>
+        -->
+      </div>
+      <input type="hidden" id="selected-reference" name="selectedReference">
+
+      <!-- Submit -->
+      <button type="submit">Submit Order</button>
+    </form>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
