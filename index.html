@@ -6,7 +6,6 @@
   <title>GFX Design Order Form</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Existing styles */
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -46,17 +45,11 @@
       align-items: center;
       font-size: 14px;
       color: white;
-      pointer-events: none;
+      pointer-events: none; /* Prevent checkbox from interfering with image click */
     }
 
     .gallery-wrapper.selected .checkbox {
-      background-color: #007bff;
-    }
-
-    .centered-title {
-      text-align: center;
-      font-size: 24px;
-      margin-top: 20px;
+      background-color: #007bff; /* Filled in when selected */
     }
 
     .dynamic-section {
@@ -80,7 +73,7 @@
     <h1>GFX Design Order Form</h1>
     <p>Fill out the form below to request your design!</p>
   </header>
-  
+
   <main>
     <form id="order-form">
       <h2>Choose Your Options</h2>
@@ -140,20 +133,11 @@
       <button type="submit">Submit</button>
     </form>
 
-    <h3 class="centered-title">Pick a reference</h3>
-    <section>
-      <h3>Banners</h3>
-      <div class="gallery" id="banners-gallery">
-        <!-- Banner images dynamically populated -->
-      </div>
-    </section>
+    <h3>Banners</h3>
+    <div class="gallery" id="banners-gallery"></div>
 
-    <section>
-      <h3>Logos</h3>
-      <div class="gallery" id="logos-gallery">
-        <!-- Logo images dynamically populated -->
-      </div>
-    </section>
+    <h3>Logos</h3>
+    <div class="gallery" id="logos-gallery"></div>
   </main>
 
   <div class="modal" id="imageModal">
@@ -162,65 +146,76 @@
   </div>
 
   <script>
-    // Populate Design Type Dropdowns and Handle Product Box Quantity
-    const designTypesContainer = document.getElementById("design-types-container");
-    const addDesignTypeButton = document.getElementById("add-design-type");
-    const removeDesignTypeButton = document.getElementById("remove-design-type");
-    const productBoxQuantity = document.getElementById("product-box-quantity");
+    const banners = [
+      "https://i.ibb.co/spQrw5DF/44444.gif",
+      "https://i.ibb.co/fzNwqzmL/24.gif",
+      "https://i.ibb.co/zhP7Xmbd/454.gif"
+    ];
 
-    let designTypeCount = 1;
+    const logos = [
+      "https://i.ibb.co/Y7jLFsBT/4545.gif",
+      "https://i.ibb.co/Z6gHYgYB/456544.gif",
+      "https://i.ibb.co/S4KwKr55/asdfs.gif"
+    ];
 
-    // Add a new Design Type dropdown
-    addDesignTypeButton.addEventListener("click", () => {
-      designTypeCount++;
+    const bannersGallery = document.getElementById("banners-gallery");
+    const logosGallery = document.getElementById("logos-gallery");
+    const selectedBannerInput = document.getElementById("selected-banner");
+    const selectedLogoInput = document.getElementById("selected-logo");
 
-      const newDropdown = document.createElement("div");
-      newDropdown.id = `design-type-${designTypeCount}`;
-      newDropdown.classList.add("dynamic-section");
-      newDropdown.innerHTML = `
-        <label for="design-type-${designTypeCount}">Design Type:</label>
-        <select id="design-type-${designTypeCount}" name="designType" class="design-type-dropdown" required>
-          <option value="banner">Banner</option>
-          <option value="logo">Logo</option>
-          <option value="calling-card">Calling Card</option>
-          <option value="product-box">Product Box</option>
-        </select>
-      `;
-      designTypesContainer.appendChild(newDropdown);
+    let selectedBanner = null;
+    let selectedLogo = null;
 
-      // Show the remove button when there's more than one dropdown
-      if (designTypeCount > 1) {
-        removeDesignTypeButton.style.display = "inline-block";
+    function selectImage(type, wrapperElement, src) {
+      if (type === "banner") {
+        // Deselect previously selected banner
+        if (selectedBanner) selectedBanner.classList.remove("selected");
+        selectedBanner = wrapperElement;
+        selectedBannerInput.value = src; // Update hidden input
+      } else if (type === "logo") {
+        // Deselect previously selected logo
+        if (selectedLogo) selectedLogo.classList.remove("selected");
+        selectedLogo = wrapperElement;
+        selectedLogoInput.value = src; // Update hidden input
       }
-
-      // Add change event listener for the new dropdown
-      newDropdown.querySelector(".design-type-dropdown").addEventListener("change", handleDesignTypeChange);
-    });
-
-    // Remove the last Design Type dropdown
-    removeDesignTypeButton.addEventListener("click", () => {
-      if (designTypeCount > 1) {
-        document.getElementById(`design-type-${designTypeCount}`).remove();
-        designTypeCount--;
-
-        // Hide the remove button if there's only one dropdown left
-        if (designTypeCount === 1) {
-          removeDesignTypeButton.style.display = "none";
-        }
-      }
-    });
-
-    // Handle Design Type dropdown change
-    function handleDesignTypeChange(event) {
-      if (event.target.value === "product-box") {
-        productBoxQuantity.style.display = "block";
-      } else {
-        productBoxQuantity.style.display = "none";
-      }
+      wrapperElement.classList.add("selected");
     }
 
-    // Add change event listener for the initial Design Type dropdown
-    document.querySelector(".design-type-dropdown").addEventListener("change", handleDesignTypeChange);
+    // Populate Banner Gallery
+    banners.forEach((src, index) => {
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("gallery-wrapper");
+
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = `Banner ${index + 1}`;
+      img.addEventListener("click", () => selectImage("banner", wrapper, src));
+
+      const checkbox = document.createElement("div");
+      checkbox.classList.add("checkbox");
+
+      wrapper.appendChild(img);
+      wrapper.appendChild(checkbox);
+      bannersGallery.appendChild(wrapper);
+    });
+
+    // Populate Logo Gallery
+    logos.forEach((src, index) => {
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("gallery-wrapper");
+
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = `Logo ${index + 1}`;
+      img.addEventListener("click", () => selectImage("logo", wrapper, src));
+
+      const checkbox = document.createElement("div");
+      checkbox.classList.add("checkbox");
+
+      wrapper.appendChild(img);
+      wrapper.appendChild(checkbox);
+      logosGallery.appendChild(wrapper);
+    });
 
     // Form submission handler
     document.getElementById("order-form").addEventListener("submit", async (e) => {
@@ -234,7 +229,7 @@
       );
 
       // Send to Discord Webhook
-      const webhookUrl = "https://discord.com/api/webhooks/1360451872246337596/-ZSpJdoRwhB6Zg2S3VuhVqw64H4ONuVea6sX1yjtHvba0iAO7zgzDpN1aJUnBnEHAvdl";
+      const webhookUrl = "YOUR_DISCORD_WEBHOOK_URL";
       await fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
