@@ -6,9 +6,9 @@
   <title>GFX Design Order Form</title>
   <link rel="stylesheet" href="style.css">
   <style>
+    /* General Gallery Styles */
     .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 10px;
       margin-top: 20px;
     }
@@ -52,6 +52,17 @@
       background-color: #007bff; /* Filled in when selected */
     }
 
+    /* Specific Styles for Banners (3 per row) */
+    #banners-gallery {
+      grid-template-columns: repeat(3, 1fr); /* 3 banners per row */
+    }
+
+    /* Specific Styles for Logos (5 per row) */
+    #logos-gallery {
+      grid-template-columns: repeat(5, 1fr); /* 5 logos per row */
+    }
+
+    /* Dynamic Section and Inputs */
     .dynamic-section {
       margin-top: 20px;
     }
@@ -66,7 +77,7 @@
       color: red;
       font-weight: bold;
     }
-  </style>
+</style>
 </head>
 <body>
   <header>
@@ -387,23 +398,43 @@ function handleDesignTypeChange() {
 document.querySelector(".design-type-dropdown").addEventListener("change", handleDesignTypeChange);
 
 
-    // Populate Banner Gallery
-    banners.forEach((src, index) => {
-      const wrapper = document.createElement("div");
-      wrapper.classList.add("gallery-wrapper");
+// Populate Banner Gallery
+banners.forEach((src, index) => {
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("gallery-wrapper");
 
-      const img = document.createElement("img");
-      img.src = src;
-      img.alt = `Banner ${index + 1}`;
-      img.addEventListener("click", () => selectImage("banner", wrapper, src));
+  const img = document.createElement("img");
+  img.src = src;
+  img.alt = `Banner ${index + 1}`;
+  img.className = "banner-img"; // Add a class for banners
+  img.addEventListener("click", () => selectImage("banner", wrapper, src));
 
-      const checkbox = document.createElement("div");
-      checkbox.classList.add("checkbox");
+  const checkbox = document.createElement("div");
+  checkbox.classList.add("checkbox");
 
-      wrapper.appendChild(img);
-      wrapper.appendChild(checkbox);
-      bannersGallery.appendChild(wrapper);
-    });
+  wrapper.appendChild(img);
+  wrapper.appendChild(checkbox);
+  bannersGallery.appendChild(wrapper);
+});
+
+// Populate Logo Gallery
+logos.forEach((src, index) => {
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("gallery-wrapper");
+
+  const img = document.createElement("img");
+  img.src = src;
+  img.alt = `Logo ${index + 1}`;
+  img.className = "logo-img"; // Add a class for logos
+  img.addEventListener("click", () => selectImage("logo", wrapper, src));
+
+  const checkbox = document.createElement("div");
+  checkbox.classList.add("checkbox");
+
+  wrapper.appendChild(img);
+  wrapper.appendChild(checkbox);
+  logosGallery.appendChild(wrapper);
+});
 // Reset Form On Refresh
   window.addEventListener("load", () => {
   document.getElementById("order-form").reset(); // Reset the form to its default state
