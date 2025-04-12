@@ -269,7 +269,10 @@ document.querySelector(".design-type-dropdown").addEventListener("change", handl
       wrapper.appendChild(checkbox);
       bannersGallery.appendChild(wrapper);
     });
-
+// Reset Form On Refresh
+  window.addEventListener("load", () => {
+  document.getElementById("order-form").reset(); // Reset the form to its default state
+});
     // Populate Logo Gallery
     logos.forEach((src, index) => {
       const wrapper = document.createElement("div");
