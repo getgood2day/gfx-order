@@ -8,86 +8,83 @@
   <style>
     /* Existing styles */
     .gallery {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 10px;
-        margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin-top: 20px;
     }
 
     .gallery-wrapper {
-        position: relative;
+      position: relative;
     }
 
     .gallery img {
-        width: 100%;
-        height: auto;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: transform 0.2s ease-in-out;
-        border: 3px solid transparent;
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
+      border: 3px solid transparent;
     }
 
     .gallery img:hover {
-        transform: scale(1.05);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
-    .gallery img.selected {
-        border: 3px solid #007bff; /* Highlight selected image */
+    .checkbox {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #007bff;
+      border-radius: 3px;
+      background-color: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      color: white;
+      pointer-events: none; /* Prevent checkbox from interfering with image click */
     }
 
-    .checkmark {
-        display: none;
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        background-color: #007bff;
-        color: white;
-        border-radius: 50%;
-        width: 20px;
-        height: 20px;
-        font-size: 14px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .gallery-wrapper.selected .checkmark {
-        display: flex;
+    .gallery-wrapper.selected .checkbox {
+      background-color: #007bff; /* Filled in when selected */
     }
 
     .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
     }
 
     .modal img {
-        max-width: 90%;
-        max-height: 90%;
-        border-radius: 10px;
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
     }
 
     .modal .close {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        font-size: 30px;
-        color: #fff;
-        cursor: pointer;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 30px;
+      color: #fff;
+      cursor: pointer;
     }
 
     .centered-title {
-        text-align: center;
-        font-size: 24px;
-        margin-top: 20px;
+      text-align: center;
+      font-size: 24px;
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -178,12 +175,11 @@
       img.alt = `Banner ${index + 1}`;
       img.addEventListener("click", () => selectImage("banner", wrapper, src));
 
-      const checkmark = document.createElement("div");
-      checkmark.classList.add("checkmark");
-      checkmark.textContent = "✔";
+      const checkbox = document.createElement("div");
+      checkbox.classList.add("checkbox");
 
       wrapper.appendChild(img);
-      wrapper.appendChild(checkmark);
+      wrapper.appendChild(checkbox);
       bannersGallery.appendChild(wrapper);
     });
 
@@ -197,12 +193,11 @@
       img.alt = `Logo ${index + 1}`;
       img.addEventListener("click", () => selectImage("logo", wrapper, src));
 
-      const checkmark = document.createElement("div");
-      checkmark.classList.add("checkmark");
-      checkmark.textContent = "✔";
+      const checkbox = document.createElement("div");
+      checkbox.classList.add("checkbox");
 
       wrapper.appendChild(img);
-      wrapper.appendChild(checkmark);
+      wrapper.appendChild(checkbox);
       logosGallery.appendChild(wrapper);
     });
 
