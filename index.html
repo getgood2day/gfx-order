@@ -73,7 +73,43 @@
     <h1>GFX Design Order Form</h1>
     <p>Fill out the form below to request your design!</p>
   </header>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Centered Image Banner</title>
+  <style>
+    .centered-banner {
+      display: flex;
+      justify-content: center; /* Horizontally centers the banner */
+      align-items: center; /* Vertically centers the banner if needed */
+      margin: 20px 0; /* Adds some space above and below the banner */
+    }
 
+    .centered-banner img {
+      max-width: 100%; /* Ensures the image scales responsively */
+      height: auto; /* Maintains the aspect ratio */
+      border-radius: 5px; /* Optional: Adds rounded corners */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: Adds a shadow effect */
+      cursor: pointer; /* Adds pointer cursor for better UX */
+      transition: transform 0.3s ease-in-out; /* Smooth hover effect */
+    }
+
+    .centered-banner img:hover {
+      transform: scale(1.05); /* Slight zoom effect on hover */
+    }
+  </style>
+</head>
+<body>
+  <h1>Centered Image Banner Example</h1>
+  <div class="centered-banner">
+    <a href="https://i.ibb.co/59wBGb2/EMBED.gif" target="_blank">
+      <img src="https://i.ibb.co/59wBGb2/EMBED.gif" alt="Banner Image">
+    </a>
+  </div>
+</body>
+</html>
   <main>
     <form id="order-form">
       <h2>Choose Your Options</h2>
@@ -142,7 +178,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Centered Thin Black Line</title>
   <style>
     .centered-line {
       width: 50%; /* Adjust the width of the line as needed */
@@ -153,7 +188,6 @@
   </style>
 </head>
 <body>
-  <h1>Example with Centered Line</h1>
   <div class="centered-line"></div>
 </body>
 </html>
