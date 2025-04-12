@@ -1,150 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Slider</title>
-    <style>
-        /* Basic styling for the page */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #f4f4f4;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFX Design Order Form</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Slider styling */
+    .slider {
+        width: 80%;
+        max-width: 600px;
+        position: relative;
+        overflow: hidden;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        background-color: #fff;
+        margin: 20px auto;
+    }
 
-        h1 {
-            margin: 20px 0;
-            color: #333;
-        }
+    .slider img {
+        width: 100%;
+        display: none;
+    }
 
-        /* Slider container */
-        .slider {
-            width: 80%;
-            max-width: 600px;
-            position: relative;
-            overflow: hidden;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            background-color: #fff;
-        }
+    .slider img.active {
+        display: block;
+    }
 
-        /* Images in the slider */
-        .slider img {
-            width: 100%;
-            display: none;
-        }
+    .nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 24px;
+        color: #fff;
+        background: rgba(0, 0, 0, 0.5);
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        z-index: 1000;
+    }
 
-        .slider img.active {
-            display: block;
-        }
+    .nav-btn.left {
+        left: 10px;
+    }
 
-        /* Navigation buttons */
-        .nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 24px;
-            color: #fff;
-            background: rgba(0, 0, 0, 0.5);
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            z-index: 1000;
-        }
+    .nav-btn.right {
+        right: 10px;
+    }
 
-        .nav-btn.left {
-            left: 10px;
-        }
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+    }
 
-        .nav-btn.right {
-            right: 10px;
-        }
+    .modal img {
+        max-width: 90%;
+        max-height: 90%;
+        border: 2px solid #fff;
+    }
 
-        /* Modal for enlarged images */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
-        .modal img {
-            max-width: 90%;
-            max-height: 90%;
-            border: 2px solid #fff;
-        }
-
-        .modal.close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 24px;
-            color: #fff;
-            cursor: pointer;
-            z-index: 2001;
-        }
-    </style>
+    .modal.close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 24px;
+        color: #fff;
+        cursor: pointer;
+        z-index: 2001;
+    }
+  </style>
 </head>
 <body>
-    <h1>Image Slider</h1>
-    <div class="slider">
-        <!-- Add images from the references folder -->
-        <img src="references/SERVER-BANNER(1).gif" alt="Image 1" class="active">
-        <img src="references/image2.jpg" alt="Image 2">
-        <img src="references/image3.jpg" alt="Image 3">
-        <!-- Add more images as needed -->
-        <button class="nav-btn left" onclick="prevImage()">&#10094;</button>
-        <button class="nav-btn right" onclick="nextImage()">&#10095;</button>
-    </div>
+  <header>
+    <h1>GFX Design Order Form</h1>
+    <p>Fill out the form below to request your design!</p>
+  </header>
+  
+  <main>
+    <form id="order-form" action="/submit-order" method="post" enctype="multipart/form-data">
+      <h2>Choose Your Options</h2>
+      
+      <!-- Design Type -->
+      <label for="design-type">Design Type:</label>
+      <select id="design-type" name="designType" required>
+        <option value="banner">Banner</option>
+        <option value="logo">Logo</option>
+        <option value="calling-card">Calling Card</option>
+        <option value="product-box">Product Box</option>
+      </select>
 
-    <!-- Modal for enlarged images -->
-    <div class="modal" id="imageModal" onclick="closeModal()">
-        <span class="modal close">&times;</span>
-        <img id="modalImage" src="" alt="Enlarged Image">
-    </div>
+      <!-- Package -->
+      <label for="package">Package:</label>
+      <select id="package" name="packageType" required>
+        <option value="server">Server Package</option>
+        <option value="user">User Package</option>
+        <option value="website">Website Package</option>
+        <option value="all-in-one">All-in-One Package</option>
+      </select>
 
-    <script>
-        let currentIndex = 0;
-        const images = document.querySelectorAll('.slider img');
-        const modal = document.getElementById('imageModal');
-        const modalImage = document.getElementById('modalImage');
+      <!-- Additional Details -->
+      <label for="details">Additional Details:</label>
+      <textarea id="details" name="details" placeholder="Describe your requirements..."></textarea>
 
-        function showImage(index) {
-            images.forEach((img, i) => {
-                img.classList.toggle('active', i === index);
-            });
-        }
+      <!-- Reference Gallery -->
+      <h3>Select a Reference</h3>
+      <div id="reference-gallery">
+        <!-- Image Slider -->
+        <div class="slider">
+            <img src="references/SERVER-BANNER(1).gif" alt="Image 1" class="active">
+            <img src="references/image2.jpg" alt="Image 2">
+            <img src="references/image3.jpg" alt="Image 3">
+            <button class="nav-btn left" onclick="prevImage()">&#10094;</button>
+            <button class="nav-btn right" onclick="nextImage()">&#10095;</button>
+        </div>
+        <input type="hidden" id="selected-reference" name="selectedReference">
+      </div>
 
-        function prevImage() {
-            currentIndex = (currentIndex > 0) ? currentIndex - 1 : images.length - 1;
-            showImage(currentIndex);
-        }
+      <!-- Submit -->
+      <button type="submit">Submit Order</button>
+    </form>
+  </main>
 
-        function nextImage() {
-            currentIndex = (currentIndex < images.length - 1) ? currentIndex + 1 : 0;
-            showImage(currentIndex);
-        }
+  <script>
+    // Slider functionality
+    let currentIndex = 0;
+    const images = document.querySelectorAll('.slider img');
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
 
-        images.forEach(img => {
-            img.addEventListener('click', () => {
-                modal.style.display = 'flex';
-                modalImage.src = img.src;
-            });
+    function showImage(index) {
+        images.forEach((img, i) => {
+            img.classList.toggle('active', i === index);
         });
+    }
 
-        function closeModal() {
-            modal.style.display = 'none';
-        }
-    </script>
+    function prevImage() {
+        currentIndex = (currentIndex > 0) ? currentIndex - 1 : images.length - 1;
+        showImage(currentIndex);
+    }
+
+    function nextImage() {
+        currentIndex = (currentIndex < images.length - 1) ? currentIndex + 1 : 0;
+        showImage(currentIndex);
+    }
+
+    images.forEach(img => {
+        img.addEventListener('click', () => {
+            modal.style.display = 'flex';
+            modalImage.src = img.src;
+        });
+    });
+
+    function closeModal() {
+        modal.style.display = 'none';
+    }
+  </script>
+  <script src="app.js"></script>
 </body>
 </html>
