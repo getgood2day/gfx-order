@@ -337,9 +337,9 @@ document.querySelector(".design-type-dropdown").addEventListener("change", handl
 
       const formData = new FormData(e.target);
 
-      const payload = Object.fromEntries(formData.entries());
-      payload.designTypes = Array.from(document.querySelectorAll(".design-type-dropdown")).map(
-        (dropdown) => dropdown.value
+payload.designTypes = Array.from(document.querySelectorAll(".design-type-dropdown"))
+  .map((dropdown) => dropdown.value)
+  .filter((value) => value && value !== "N/A"); // Exclude empty or "N/A" values
       );
 
       try {
