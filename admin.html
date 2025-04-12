@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Admin Panel</h1>
+    <p>Upload new references for customers to select.</p>
+  </header>
+  
+  <main>
+    <form id="upload-form" action="/admin/upload-reference" method="post" enctype="multipart/form-data">
+      <label for="reference-upload">Upload Reference:</label>
+      <input type="file" id="reference-upload" name="reference" accept="image/*" required>
+      <button type="submit">Upload</button>
+    </form>
+
+    <h2>Uploaded References</h2>
+    <div id="reference-gallery">
+      <!-- Uploaded references will be displayed here -->
+    </div>
+  </main>
+
+  <script>
+    // Fetch and display references
+    async function loadReferences() {
+      const response = await fetch("/references");
+      const references = await response.json();
+      
+      const gallery = document.getElementById("reference-gallery");
+      gallery.innerHTML = ""; // Clear gallery
+
+      references.forEach((ref) => {
+        const img = document.createElement("img");
+        img.src = ref;
+        img.alt = "Reference";
+        img.classList.add("reference-image");
+        gallery.appendChild(img);
+      });
+    }
+
+    // Load references on page load
+    loadReferences();
+
+    // Upload form submission
+    document.getElementById("upload-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const response = await fetch("/admin/upload-reference", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        alert("Reference uploaded successfully!");
+        loadReferences();
+      } else {
+        alert("Failed to upload reference.");
+      }
+    });
+  </script>
+</body>
+</html>
