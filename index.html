@@ -6,50 +6,100 @@
   <title>GFX Design Order Form</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Slider styling */
-    .slider {
-        width: 80%;
-        max-width: 600px;
-        position: relative;
-        overflow: hidden;
-        border: 2px solid #ddd;
-        border-radius: 10px;
-        background-color: #fff;
-        margin: 20px auto;
+    /* General Styling */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+        color: #333;
     }
 
-    .slider a {
-        display: none;
+    header {
+        text-align: center;
+        padding: 20px;
+        background-color: #333;
+        color: #fff;
     }
 
-    .slider a.active {
-        display: block;
+    main {
+        padding: 20px;
     }
 
-    .slider img {
+    h2, h3 {
+        margin-top: 40px;
+        text-align: center;
+        color: #333;
+    }
+
+    /* Gallery Styling */
+    .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .gallery img {
         width: 100%;
         height: auto;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: transform 0.2s ease-in-out;
     }
 
-    .nav-btn {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 24px;
-        color: #fff;
-        background: rgba(0, 0, 0, 0.5);
-        border: none;
-        padding: 10px;
-        cursor: pointer;
+    .gallery img:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Modal Styling */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
         z-index: 1000;
     }
 
-    .nav-btn.left {
-        left: 10px;
+    .modal img {
+        max-width: 90%;
+        max-height: 90%;
+        border-radius: 10px;
     }
 
-    .nav-btn.right {
-        right: 10px;
+    .modal .close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 30px;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .modal .nav-btn {
+        position: absolute;
+        top: 50%;
+        font-size: 40px;
+        color: #fff;
+        background: none;
+        border: none;
+        cursor: pointer;
+        transform: translateY(-50%);
+        z-index: 1001;
+    }
+
+    .modal .nav-btn.left {
+        left: 20px;
+    }
+
+    .modal .nav-btn.right {
+        right: 20px;
     }
   </style>
 </head>
@@ -84,55 +134,80 @@
       <!-- Additional Details -->
       <label for="details">Additional Details:</label>
       <textarea id="details" name="details" placeholder="Describe your requirements..."></textarea>
-
-      <!-- Reference Gallery -->
-      <h3>Select a Reference</h3>
-      <div id="reference-gallery">
-        <!-- Link-Based Image Slider -->
-        <div class="slider">
-            <a href="https://photos.fife.usercontent.google.com/pw/AP1GczPH-Kq2dzrgSZaH5drvNSolv24hFa1T7ZJ7qBZOVekZsxezm4k_Hs7f=w700-h394-s-no-gm?authuser=2" target="_blank" class="active">
-                <img src="https://photos.fife.usercontent.google.com/pw/AP1GczPH-Kq2dzrgSZaH5drvNSolv24hFa1T7ZJ7qBZOVekZsxezm4k_Hs7f=w700-h394-s-no-gm?authuser=2" alt="Image 1">
-            </a>
-            <a href="references/image2.jpg" target="_blank">
-                <img src="references/image2.jpg" alt="Image 2">
-            </a>
-            <a href="references/image3.jpg" target="_blank">
-                <img src="references/image3.jpg" alt="Image 3">
-            </a>
-            <button class="nav-btn left" onclick="prevImage(event)">&#10094;</button>
-            <button class="nav-btn right" onclick="nextImage(event)">&#10095;</button>
-        </div>
-        <input type="hidden" id="selected-reference" name="selectedReference">
-      </div>
-
-      <!-- Submit -->
-      <button type="submit">Submit Order</button>
     </form>
+
+    <!-- Logos Gallery -->
+    <section>
+      <h3>Logos</h3>
+      <div class="gallery" id="logos-gallery">
+        <!-- Placeholder for Logos -->
+      </div>
+    </section>
+
+    <!-- Banners Gallery -->
+    <section>
+      <h3>Banners</h3>
+      <div class="gallery" id="banners-gallery">
+        <!-- Placeholder for Banners -->
+      </div>
+    </section>
   </main>
 
-  <script>
-    // Link-Based Slider Functionality
-    let currentIndex = 0;
-    const links = document.querySelectorAll('.slider a');
+  <!-- Modal Overlay -->
+  <div class="modal" id="imageModal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <button class="nav-btn left" onclick="prevImage()">&#10094;</button>
+    <img id="modalImage" src="" alt="Expanded Image">
+    <button class="nav-btn right" onclick="nextImage()">&#10095;</button>
+  </div>
 
-    function showLink(index) {
-        links.forEach((link, i) => {
-            link.classList.toggle('active', i === index);
+  <script>
+    const logos = Array.from({ length: 66 }, (_, i) => `references/logos/logo${i + 1}.jpg`);
+    const banners = Array.from({ length: 83 }, (_, i) => `references/banners/banner${i + 1}.jpg`);
+
+    const logosGallery = document.getElementById('logos-gallery');
+    const bannersGallery = document.getElementById('banners-gallery');
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+
+    let currentImageIndex = 0;
+    let currentGallery = [];
+
+    // Populate Galleries
+    function populateGallery(images, galleryElement) {
+        images.forEach((src, index) => {
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = `Image ${index + 1}`;
+            img.addEventListener('click', () => openModal(images, index));
+            galleryElement.appendChild(img);
         });
     }
 
-    function prevImage(event) {
-        event.preventDefault(); // Prevent page reload from button click
-        currentIndex = (currentIndex > 0) ? currentIndex - 1 : links.length - 1;
-        showLink(currentIndex);
+    populateGallery(logos, logosGallery);
+    populateGallery(banners, bannersGallery);
+
+    // Modal Functionality
+    function openModal(gallery, index) {
+        currentGallery = gallery;
+        currentImageIndex = index;
+        modalImage.src = gallery[index];
+        modal.style.display = 'flex';
     }
 
-    function nextImage(event) {
-        event.preventDefault(); // Prevent page reload from button click
-        currentIndex = (currentIndex < links.length - 1) ? currentIndex + 1 : 0;
-        showLink(currentIndex);
+    function closeModal() {
+        modal.style.display = 'none';
+    }
+
+    function prevImage() {
+        currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : currentGallery.length - 1;
+        modalImage.src = currentGallery[currentImageIndex];
+    }
+
+    function nextImage() {
+        currentImageIndex = (currentImageIndex < currentGallery.length - 1) ? currentImageIndex + 1 : 0;
+        modalImage.src = currentGallery[currentImageIndex];
     }
   </script>
-  <script src="app.js"></script>
 </body>
 </html>
