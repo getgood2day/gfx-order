@@ -409,7 +409,7 @@ logos.forEach((src, index) => {
     });
 
 
-  document.getElementById("order-form").addEventListener("submit", async (e) => {
+document.getElementById("order-form").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
@@ -426,7 +426,7 @@ logos.forEach((src, index) => {
     const productBoxQuantity = document.getElementById("box-quantity").value;
 
     // Generate "Order type" summary
-    let orderType = "Order type: ";
+    let orderType = "";
     if (productBoxQuantity > 0) {
       orderType += `${productBoxQuantity} product boxes, `;
     }
@@ -435,11 +435,14 @@ logos.forEach((src, index) => {
     const filteredDesignTypes = designTypes.filter((type) => type !== "product-box");
     orderType += filteredDesignTypes.join(", ");
 
+    // Trim any trailing commas or spaces
+    orderType = orderType.trim().replace(/,\s*$/, "");
+
     // Add the "Order type" summary to the payload
     payload.orderType = orderType;
 
-    // Include the raw design types in the payload for backend processing
-    payload.designTypes = designTypes;
+    // Remove designType from payload (not needed anymore)
+    delete payload.designType;
 
     // Output the "Order type" at the top of the form submission (for debugging or user confirmation)
     console.log(orderType);
