@@ -492,37 +492,6 @@ document.getElementById("order-form").addEventListener("submit", async (e) => {
     const products = formData.getAll("products[]");
 
     // Construct the payload with orderType first
-document.getElementById("order-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(e.target);
-
-    // Collect all design types from the dropdowns
-    const designTypeDropdowns = document.querySelectorAll(".design-type-dropdown");
-    const designTypes = Array.from(designTypeDropdowns)
-      .map((dropdown) => dropdown.value)
-      .filter((value) => value && value !== "N/A"); // Exclude empty or "N/A" values
-
-    // Check if a product box quantity is provided
-    const productBoxQuantity = document.getElementById("box-quantity").value;
-
-    // Generate "Order type" summary
-    let orderType = "";
-    if (productBoxQuantity > 0) {
-      orderType += `${productBoxQuantity} product boxes, `;
-    }
-
-    // Exclude "product-box" from the designTypes when generating orderType
-    const filteredDesignTypes = designTypes.filter((type) => type !== "product-box");
-    orderType += filteredDesignTypes.join(", ");
-
-    // Trim any trailing commas or spaces
-    orderType = orderType.trim().replace(/,\s*$/, "");
-
-    // Collect products into a list
-    const products = formData.getAll("products[]");
-
-    // Construct the payload with orderType first
     const payload = {
       orderType: orderType, // Add orderType at the top
       packageType: formData.get("packageType"),
@@ -538,18 +507,18 @@ document.getElementById("order-form").addEventListener("submit", async (e) => {
 
     // Output the formatted payload for debugging
     console.log("New Design Request:");
-    console.log(`orderType: ${payload.orderType}`);
-    console.log(`packageType: ${payload.packageType}`);
-    console.log(`brand: ${payload.brand}`);
-    console.log(`colorScheme: ${payload.colorScheme}`);
-    console.log(`slogan: ${payload.slogan}`);
-    console.log(`links: ${payload.links}`);
-    console.log(`extraInfo: ${payload.extraInfo}`);
-    console.log(`selectedBanner: ${payload.selectedBanner}`);
-    console.log(`selectedLogo: ${payload.selectedLogo}`);
-    console.log("products:");
+    console.log(`- orderType: ${payload.orderType}`);
+    console.log(`- packageType: ${payload.packageType}`);
+    console.log(`- brand: ${payload.brand}`);
+    console.log(`- colorScheme: ${payload.colorScheme}`);
+    console.log(`- slogan: ${payload.slogan}`);
+    console.log(`- links: ${payload.links}`);
+    console.log(`- extraInfo: ${payload.extraInfo}`);
+    console.log(`- selectedBanner: ${payload.selectedBanner}`);
+    console.log(`- selectedLogo: ${payload.selectedLogo}`);
+    console.log(`- products:`);
     products.forEach((product, index) => {
-        console.log(`  product ${index + 1}: ${product}`);
+      console.log(`  ${index + 1}. ${product}`);
     });
 
     try {
