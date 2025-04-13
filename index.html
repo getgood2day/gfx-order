@@ -444,6 +444,7 @@ logos.forEach((src, index) => {
 
     // Remove unnecessary fields from the payload
     delete payload.boxQuantity; // Remove boxQuantity since it’s reflected in orderType
+    delete payload.designType; // Ensure designType is removed entirely
 
     // Output the "Order type" at the top of the form submission (for debugging or user confirmation)
     console.log(payload.orderType);
