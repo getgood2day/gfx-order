@@ -408,49 +408,49 @@ logos.forEach((src, index) => {
       logosGallery.appendChild(wrapper);
     });
 
-  document.addEventListener("DOMContentLoaded", () => {
+   document.addEventListener("DOMContentLoaded", () => {
+    // Reference to the product box quantity input field
     const productBoxQuantity = document.getElementById("product-box-quantity");
     const productsContainer = document.createElement("div");
     productsContainer.id = "products-container";
     productsContainer.style.display = "none"; // Initially hidden
 
-    let productCount = 0;
-// Function to add product box field
-function addProductField() {
-  const currentProductCount = productsContainer.querySelectorAll(".product-field").length + 1;
+    // Function to dynamically add product input fields
+    function addProductField() {
+      const currentProductCount = productsContainer.querySelectorAll(".product-field").length + 1;
 
-  const productFieldWrapper = document.createElement("div");
-  productFieldWrapper.id = `product-${currentProductCount}`;
-  productFieldWrapper.classList.add("product-field");
+      const productFieldWrapper = document.createElement("div");
+      productFieldWrapper.id = `product-${currentProductCount}`;
+      productFieldWrapper.classList.add("product-field");
 
-  productFieldWrapper.innerHTML = `
-    <label for="product-${currentProductCount}-name">Product ${currentProductCount}:</label>
-    <input type="text" id="product-${currentProductCount}-name" name="products[]" placeholder="Enter product name">
-    <button type="button" class="remove-product-button" onclick="removeProductField(${currentProductCount})">Remove</button>
-  `;
+      productFieldWrapper.innerHTML = `
+        <label for="product-${currentProductCount}-name">Product ${currentProductCount}:</label>
+        <input type="text" id="product-${currentProductCount}-name" name="products[]" placeholder="Enter product name">
+        <button type="button" class="remove-product-button" onclick="removeProductField(${currentProductCount})">Remove</button>
+      `;
 
-  productsContainer.appendChild(productFieldWrapper);
-}
+      productsContainer.appendChild(productFieldWrapper);
+    }
 
-    // Function to remove a product input field
-    window.removeProductField = function(productId) {
+    // Function to dynamically remove a product input field by its ID
+    window.removeProductField = function (productId) {
       const fieldToRemove = document.getElementById(`product-${productId}`);
       if (fieldToRemove) {
         fieldToRemove.remove();
       }
     };
 
-    // Add button to dynamically add product fields
+    // Button to add product input fields dynamically
     const addProductButton = document.createElement("button");
     addProductButton.type = "button";
     addProductButton.textContent = "Add Product";
     addProductButton.onclick = addProductField;
 
-    // Append the products container and the add product button after the number of boxes input
+    // Append the products container and the add product button after the product box quantity input
     productBoxQuantity.insertAdjacentElement("afterend", productsContainer);
     productsContainer.insertAdjacentElement("beforeend", addProductButton);
 
-    // Handle Design Type dropdown change
+    // Handle changes to the Design Type dropdown to show/hide product fields
     function handleDesignTypeChange() {
       const designTypeDropdowns = document.querySelectorAll(".design-type-dropdown");
       const hasProductBox = Array.from(designTypeDropdowns).some(
@@ -464,13 +464,19 @@ function addProductField() {
         productBoxQuantity.style.display = "none";
         productsContainer.style.display = "none";
 
+        // Clear all product input fields when "Product Box" is deselected
         while (productsContainer.firstChild && productsContainer.firstChild.id !== addProductButton.id) {
           productsContainer.firstChild.remove();
         }
-        productCount = 0;
       }
     }
-});
+
+    // Attach the change event listener to the initial Design Type dropdown
+    const initialDesignTypeDropdown = document.querySelector(".design-type-dropdown");
+    if (initialDesignTypeDropdown) {
+      initialDesignTypeDropdown.addEventListener("change", handleDesignTypeChange);
+    }
+  });
 
 
 
