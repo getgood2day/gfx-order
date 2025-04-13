@@ -522,17 +522,17 @@ document.getElementById("order-form").addEventListener("submit", async (e) => {
     };
 
     // Output the formatted payload for debugging
-    console.log("New Design Request:");
-    console.log(`orderType: ${payload.orderType}`);
-    console.log(`packageType: ${payload.packageType}`);
-    console.log(`brand: ${payload.brand}`);
-    console.log(`colorScheme: ${payload.colorScheme}`); // Log color scheme properly
-    console.log(`slogan: ${payload.slogan}`);
-    console.log(`links: ${payload.links}`);
-    console.log(`extraInfo: ${payload.extraInfo}`);
-    console.log(`selectedBanner: ${payload.selectedBanner}`);
-    console.log(`selectedLogo: ${payload.selectedLogo}`);
-    console.log("products:");
+    console.log("New GFX Order:");
+    console.log(`Order Type: ${payload.orderType}`);
+    console.log(`Package Type: ${payload.packageType}`);
+    console.log(`Brand Name: ${payload.brand}`);
+    console.log(`Color Scheme: ${payload.colorScheme}`); // Log color scheme properly
+    console.log(`Slogan for banner: ${payload.slogan}`);
+    console.log(`Store or Discord Links: ${payload.links}`);
+    console.log(`Extra Information: ${payload.extraInfo}`);
+    console.log(`Banner Reference: ${payload.selectedBanner}`);
+    console.log(`Logo Reference: ${payload.selectedLogo}`);
+    console.log("Products:");
     products.forEach((product, index) => {
       console.log(`  product ${index + 1}: ${product}`);
     });
