@@ -407,7 +407,87 @@ logos.forEach((src, index) => {
       wrapper.appendChild(checkbox);
       logosGallery.appendChild(wrapper);
     });
+  // Function to add a product input field
+  function addProductField() {
+    productCount++;
 
+    const productFieldWrapper = document.createElement("div");
+    productFieldWrapper.id = `product-${productCount}`;
+    productFieldWrapper.classList.add("product-field");
+
+    productFieldWrapper.innerHTML = `
+      <label for="product-${productCount}-name">Product ${productCount}:</label>
+      <input type="text" id="product-${productCount}-name" name="products[]" placeholder="Enter product name">
+      <button type="button" class="remove-product-button" onclick="removeProductField(${productCount})">Remove</button>
+    `;
+
+    productsContainer.appendChild(productFieldWrapper);
+  }
+
+  // Function to remove a product input field
+  function removeProductField(productId) {
+    const fieldToRemove = document.getElementById(`product-${productId}`);
+    if (fieldToRemove) {
+      fieldToRemove.remove();
+    }
+  }
+
+  // Add button to dynamically add product fields
+  const addProductButton = document.createElement("button");
+  addProductButton.type = "button";
+  addProductButton.textContent = "Add Product";
+  addProductButton.onclick = addProductField;
+
+  // Append the products container and the add product button after the number of boxes input
+  productBoxQuantity.insertAdjacentElement("afterend", productsContainer);
+  productsContainer.insertAdjacentElement("beforeend", addProductButton);
+
+  // Handle Design Type dropdown change
+  function handleDesignTypeChange() {
+    // Get all design type dropdowns
+    const designTypeDropdowns = document.querySelectorAll(".design-type-dropdown");
+
+    // Check if at least one dropdown is set to "Product Box"
+    const hasProductBox = Array.from(designTypeDropdowns).some(
+      (dropdown) => dropdown.value === "product-box"
+    );
+
+    // Show or hide the numeric input and products container based on the presence of "Product Box"
+    if (hasProductBox) {
+      productBoxQuantity.style.display = "block";
+      productsContainer.style.display = "block";
+    } else {
+      productBoxQuantity.style.display = "none";
+      productsContainer.style.display = "none";
+
+      // Remove all product input fields when "Product Box" is deselected
+      while (productsContainer.firstChild && productsContainer.firstChild.id !== addProductButton.id) {
+        productsContainer.firstChild.remove();
+      }
+      productCount = 0; // Reset product count
+    }
+  }
+
+  // Add change event listener for the initial Design Type dropdown
+  document.querySelector(".design-type-dropdown").addEventListener("change", handleDesignTypeChange);
+
+  // Add dynamic behavior for additional dropdowns
+  const addDesignTypeButton = document.getElementById("add-design-type");
+  addDesignTypeButton.addEventListener("click", () => {
+    const newDropdown = document.createElement("div");
+    newDropdown.classList.add("dynamic-section");
+    newDropdown.innerHTML = `
+      <label for="design-type-${productCount + 1}">Design Type:</label>
+      <select id="design-type-${productCount + 1}" name="designType" class="design-type-dropdown" required>
+        <option value="banner">Banner</option>
+        <option value="logo">Logo</option>
+        <option value="calling-card">Calling Card</option>
+        <option value="product-box">Product Box</option>
+      </select>
+    `;
+    document.getElementById("design-types-container").appendChild(newDropdown);
+    newDropdown.querySelector(".design-type-dropdown").addEventListener("change", handleDesignTypeChange);
+  });
 
   document.getElementById("order-form").addEventListener("submit", async (e) => {
     e.preventDefault();
