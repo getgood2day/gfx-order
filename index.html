@@ -409,7 +409,7 @@ logos.forEach((src, index) => {
     });
 
 
-document.getElementById("order-form").addEventListener("submit", async (e) => {
+  document.getElementById("order-form").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
@@ -441,8 +441,8 @@ document.getElementById("order-form").addEventListener("submit", async (e) => {
     // Add the "Order type" summary to the payload
     payload.orderType = orderType;
 
-    // Remove designType from payload (not needed anymore)
-    delete payload.designType;
+    // Remove boxQuantity from payload (not needed anymore)
+    delete payload.boxQuantity;
 
     // Output the "Order type" at the top of the form submission (for debugging or user confirmation)
     console.log(orderType);
