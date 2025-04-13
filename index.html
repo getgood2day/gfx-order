@@ -407,55 +407,59 @@ logos.forEach((src, index) => {
       wrapper.appendChild(checkbox);
       logosGallery.appendChild(wrapper);
     });
-// Add this code inside your existing <script> tag
-document.addEventListener("DOMContentLoaded", () => {
-  // Reference to the product box quantity input field
-  const productBoxQuantityInput = document.getElementById("box-quantity");
-  const productsContainer = document.createElement("div");
-  productsContainer.id = "products-container";
-  productsContainer.style.marginTop = "20px";
+// Add this logic to dynamically handle product box fields
+const productBoxQuantityInput = document.getElementById("box-quantity");
+const productsContainer = document.createElement("div");
+productsContainer.id = "products-container";
+productsContainer.style.marginTop = "20px";
 
-  // Insert the products container just above the submit button
-  const submitButton = document.querySelector("button[type='submit']");
-  if (submitButton) {
-    submitButton.insertAdjacentElement("beforebegin", productsContainer);
-  }
+// Insert the products container just above the submit button
+const submitButton = document.querySelector("button[type='submit']");
+if (submitButton) {
+  submitButton.insertAdjacentElement("beforebegin", productsContainer);
+}
 
-  // Function to update product fields based on product box quantity
-  function updateProductFields() {
-    const quantity = parseInt(productBoxQuantityInput.value, 10) || 0; // Get the value, default to 0
-    const currentFields = productsContainer.querySelectorAll(".product-field").length;
+// Function to update product fields based on product box quantity
+function updateProductFields(event) {
+  // Prevent the form from submitting (if this was the cause)
+  event.preventDefault();
 
-    // If the quantity is greater, add fields
-    if (quantity > currentFields) {
-      for (let i = currentFields + 1; i <= quantity; i++) {
-        const productFieldWrapper = document.createElement("div");
-        productFieldWrapper.id = `product-${i}`;
-        productFieldWrapper.classList.add("product-field");
-        productFieldWrapper.style.marginBottom = "10px";
+  const quantity = parseInt(productBoxQuantityInput.value, 10) || 0; // Get the value, default to 0
+  const currentFields = productsContainer.querySelectorAll(".product-field").length;
 
-        productFieldWrapper.innerHTML = `
-          <label for="product-${i}-name">Product ${i}:</label>
-          <input type="text" id="product-${i}-name" name="products[]" placeholder="Enter product name">
-        `;
+  // If the quantity is greater, add fields
+  if (quantity > currentFields) {
+    for (let i = currentFields + 1; i <= quantity; i++) {
+      const productFieldWrapper = document.createElement("div");
+      productFieldWrapper.id = `product-${i}`;
+      productFieldWrapper.classList.add("product-field");
+      productFieldWrapper.style.marginBottom = "10px";
 
-        productsContainer.appendChild(productFieldWrapper);
-      }
-    }
+      productFieldWrapper.innerHTML = `
+        <label for="product-${i}-name">Product ${i}:</label>
+        <input type="text" id="product-${i}-name" name="products[]" placeholder="Enter product name">
+      `;
 
-    // If the quantity is smaller, remove extra fields
-    if (quantity < currentFields) {
-      for (let i = currentFields; i > quantity; i--) {
-        const fieldToRemove = document.getElementById(`product-${i}`);
-        if (fieldToRemove) {
-          fieldToRemove.remove();
-        }
-      }
+      productsContainer.appendChild(productFieldWrapper);
     }
   }
 
-  // Attach event listener to update product fields in real time
-  productBoxQuantityInput.addEventListener("input", updateProductFields);
+  // If the quantity is smaller, remove extra fields
+  if (quantity < currentFields) {
+    for (let i = currentFields; i > quantity; i--) {
+      const fieldToRemove = document.getElementById(`product-${i}`);
+      if (fieldToRemove) {
+        fieldToRemove.remove();
+      }
+    }
+  }
+}
+
+// Attach event listener to update product fields in real time
+// Use "input" to detect changes and ensure it doesn't trigger submit
+productBoxQuantityInput.addEventListener("input", (event) => {
+  event.preventDefault(); // Prevent form submission
+  updateProductFields(event);
 });
 
   document.getElementById("order-form").addEventListener("submit", async (e) => {
