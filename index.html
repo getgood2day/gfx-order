@@ -123,8 +123,11 @@
       <label for="brand">Brand:</label>
       <input type="text" id="brand" name="brand" placeholder="Enter your brand">
 
-      <label for="color-scheme">Color Scheme:</label>
-      <input type="text" id="color-scheme" name="colorScheme" placeholder="Enter color scheme">
+     <label for="color-1">Primary Color:</label>
+<input type="color" id="color-1" name="color1" value="#ff0000"> <!-- Default to red -->
+
+<label for="color-2">Secondary Color:</label>
+<input type="color" id="color-2" name="color2" value="#0000ff"> <!-- Default to blue -->
 
       <label for="slogan">Slogan for Banner:</label>
       <input type="text" id="slogan" name="slogan" placeholder="Enter slogan for banner">
@@ -466,6 +469,10 @@ document.getElementById("order-form").addEventListener("submit", async (e) => {
 
     const formData = new FormData(e.target);
 
+    // Collect the two color scheme values
+    const primaryColor = formData.get("color1");
+    const secondaryColor = formData.get("color2");
+
     // Collect all design types from the dropdowns
     const designTypeDropdowns = document.querySelectorAll(".design-type-dropdown");
     const designTypes = Array.from(designTypeDropdowns)
@@ -496,7 +503,10 @@ document.getElementById("order-form").addEventListener("submit", async (e) => {
       orderType: orderType, // Add orderType at the top
       packageType: formData.get("packageType"),
       brand: formData.get("brand"),
-      colorScheme: formData.get("colorScheme"),
+      colorScheme: {
+        primary: primaryColor,
+        secondary: secondaryColor
+      },
       slogan: formData.get("slogan"),
       links: formData.get("links"),
       extraInfo: formData.get("extraInfo"),
@@ -507,18 +517,18 @@ document.getElementById("order-form").addEventListener("submit", async (e) => {
 
     // Output the formatted payload for debugging
     console.log("New Design Request:");
-    console.log(`- orderType: ${payload.orderType}`);
-    console.log(`- packageType: ${payload.packageType}`);
-    console.log(`- brand: ${payload.brand}`);
-    console.log(`- colorScheme: ${payload.colorScheme}`);
-    console.log(`- slogan: ${payload.slogan}`);
-    console.log(`- links: ${payload.links}`);
-    console.log(`- extraInfo: ${payload.extraInfo}`);
-    console.log(`- selectedBanner: ${payload.selectedBanner}`);
-    console.log(`- selectedLogo: ${payload.selectedLogo}`);
-    console.log(`- products:`);
+    console.log(`orderType: ${payload.orderType}`);
+    console.log(`packageType: ${payload.packageType}`);
+    console.log(`brand: ${payload.brand}`);
+    console.log(`colorScheme: Primary - ${payload.colorScheme.primary}, Secondary - ${payload.colorScheme.secondary}`);
+    console.log(`slogan: ${payload.slogan}`);
+    console.log(`links: ${payload.links}`);
+    console.log(`extraInfo: ${payload.extraInfo}`);
+    console.log(`selectedBanner: ${payload.selectedBanner}`);
+    console.log(`selectedLogo: ${payload.selectedLogo}`);
+    console.log("products:");
     products.forEach((product, index) => {
-      console.log(`  ${index + 1}. ${product}`);
+      console.log(`  product ${index + 1}: ${product}`);
     });
 
     try {
