@@ -498,15 +498,15 @@ document.getElementById("order-form").addEventListener("submit", async (e) => {
     // Collect products into a list
     const products = formData.getAll("products[]");
 
+    // Format the color scheme as a string
+    const colorScheme = `Primary: ${primaryColor}, Secondary: ${secondaryColor}`;
+
     // Construct the payload with orderType first
     const payload = {
       orderType: orderType, // Add orderType at the top
       packageType: formData.get("packageType"),
       brand: formData.get("brand"),
-      colorScheme: {
-        primary: primaryColor,
-        secondary: secondaryColor
-      },
+      colorScheme: colorScheme, // Save color scheme as a string
       slogan: formData.get("slogan"),
       links: formData.get("links"),
       extraInfo: formData.get("extraInfo"),
@@ -520,7 +520,7 @@ document.getElementById("order-form").addEventListener("submit", async (e) => {
     console.log(`orderType: ${payload.orderType}`);
     console.log(`packageType: ${payload.packageType}`);
     console.log(`brand: ${payload.brand}`);
-    console.log(`colorScheme: Primary - ${payload.colorScheme.primary}, Secondary - ${payload.colorScheme.secondary}`);
+    console.log(`colorScheme: ${payload.colorScheme}`); // Log color scheme properly
     console.log(`slogan: ${payload.slogan}`);
     console.log(`links: ${payload.links}`);
     console.log(`extraInfo: ${payload.extraInfo}`);
