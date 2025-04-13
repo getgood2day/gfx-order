@@ -340,9 +340,15 @@ function handleDesignTypeChange() {
 
   // Show or hide the numeric input based on the presence of "Product Box"
   if (hasProductBox) {
-    productBoxQuantity.style.display = "block";
+    productBoxQuantity.style.display = "block"; // Show box quantity input
   } else {
-    productBoxQuantity.style.display = "none";
+    productBoxQuantity.style.display = "none"; // Hide box quantity input
+
+    // Remove any existing product fields
+    const productsContainer = document.getElementById("products-container");
+    if (productsContainer) {
+      productsContainer.innerHTML = ""; // Clear all product fields
+    }
   }
 }
 
