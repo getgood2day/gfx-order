@@ -409,44 +409,55 @@ logos.forEach((src, index) => {
     });
 
 
-document.getElementById("order-form").addEventListener("submit", async (e) => {
-  e.preventDefault();
+  document.getElementById("order-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  const formData = new FormData(e.target);
+    const formData = new FormData(e.target);
 
-  const payload = Object.fromEntries(formData.entries());
+    const payload = Object.fromEntries(formData.entries());
 
-  // Only include additional design type dropdowns in DesignTypes
-  const designTypeDropdowns = document.querySelectorAll(".design-type-dropdown");
-  if (designTypeDropdowns.length > 1) {
-    payload.designTypes = Array.from(designTypeDropdowns)
-      .slice(1) // Skip the first dropdown (the initial one)
+    // Collect all design types from the dropdowns
+    const designTypeDropdowns = document.querySelectorAll(".design-type-dropdown");
+    const designTypes = Array.from(designTypeDropdowns)
       .map((dropdown) => dropdown.value)
       .filter((value) => value && value !== "N/A"); // Exclude empty or "N/A" values
-  } else {
-    payload.designTypes = []; // No extra dropdowns, leave DesignTypes empty
-  }
 
-  try {
-    // Replace with your backend server URL
-    const backendUrl = "https://gfx-ordfe2.art/send-message"; // Update <YOUR-VPS-IP>
-    const response = await fetch(backendUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    // Check if a product box quantity is provided
+    const productBoxQuantity = document.getElementById("box-quantity").value;
 
-    if (response.ok) {
-      alert("Form submitted successfully!");
-    } else {
-      const errorText = await response.text();
-      alert(`Failed to submit the form: ${errorText}`);
+    // Generate the "Order type" summary
+    let orderType = "Order type: ";
+    if (productBoxQuantity > 0) {
+      orderType += `${productBoxQuantity} product boxes, `;
     }
-  } catch (error) {
-    console.error("Error:", error);
-    alert("An error occurred while submitting the form.");
-  }
-});
+    orderType += designTypes.join(", ");
+
+    // Add the "Order type" summary to the payload
+    payload.orderType = orderType;
+
+    // Output the "Order type" at the top of the form submission (for debugging or user confirmation)
+    console.log(orderType);
+
+    try {
+      // Replace with your backend server URL
+      const backendUrl = "https://gfx-ordfe2.art/send-message"; // Update <YOUR-VPS-IP>
+      const response = await fetch(backendUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        alert("Form submitted successfully!");
+      } else {
+        const errorText = await response.text();
+        alert(`Failed to submit the form: ${errorText}`);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while submitting the form.");
+    }
+  });
   </script>
 </body>
 </html>
