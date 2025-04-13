@@ -460,7 +460,8 @@ productBoxQuantityInput.addEventListener("input", (event) => {
   updateProductFields(event);
 });
 
-  document.getElementById("order-form").addEventListener("submit", async (e) => {
+// Order Form Submission
+document.getElementById("order-form").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
@@ -487,18 +488,38 @@ productBoxQuantityInput.addEventListener("input", (event) => {
     // Trim any trailing commas or spaces
     orderType = orderType.trim().replace(/,\s*$/, "");
 
+    // Collect products into a list
+    const products = formData.getAll("products[]");
+
     // Construct the payload with orderType first
     const payload = {
       orderType: orderType, // Add orderType at the top
-      ...Object.fromEntries(formData.entries()), // Add the rest of the form data
+      packageType: formData.get("packageType"),
+      brand: formData.get("brand"),
+      colorScheme: formData.get("colorScheme"),
+      slogan: formData.get("slogan"),
+      links: formData.get("links"),
+      extraInfo: formData.get("extraInfo"),
+      selectedBanner: formData.get("selectedBanner"),
+      selectedLogo: formData.get("selectedLogo"),
+      products: products, // Add products as an array
     };
 
-    // Remove unnecessary fields from the payload
-    delete payload.boxQuantity; // Remove boxQuantity since it’s reflected in orderType
-    delete payload.designType; // Ensure designType is removed entirely
-
-    // Output the "Order type" at the top of the form submission (for debugging or user confirmation)
-    console.log(payload.orderType);
+    // Output the formatted payload for debugging
+    console.log("New Design Request:");
+    console.log(`- orderType: ${payload.orderType}`);
+    console.log(`- packageType: ${payload.packageType}`);
+    console.log(`- brand: ${payload.brand}`);
+    console.log(`- colorScheme: ${payload.colorScheme}`);
+    console.log(`- slogan: ${payload.slogan}`);
+    console.log(`- links: ${payload.links}`);
+    console.log(`- extraInfo: ${payload.extraInfo}`);
+    console.log(`- selectedBanner: ${payload.selectedBanner}`);
+    console.log(`- selectedLogo: ${payload.selectedLogo}`);
+    console.log(`- products:`);
+    products.forEach((product, index) => {
+      console.log(`  ${index + 1}. ${product}`);
+    });
 
     try {
       // Replace with your backend server URL
@@ -519,7 +540,7 @@ productBoxQuantityInput.addEventListener("input", (event) => {
       console.error("Error:", error);
       alert("An error occurred while submitting the form.");
     }
-  });
+});
   </script>
 </body>
 </html>
