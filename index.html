@@ -409,12 +409,10 @@ logos.forEach((src, index) => {
     });
 
 
- document.getElementById("order-form").addEventListener("submit", async (e) => {
+  document.getElementById("order-form").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
-
-    const payload = Object.fromEntries(formData.entries());
 
     // Collect all design types from the dropdowns
     const designTypeDropdowns = document.querySelectorAll(".design-type-dropdown");
@@ -438,15 +436,17 @@ logos.forEach((src, index) => {
     // Trim any trailing commas or spaces
     orderType = orderType.trim().replace(/,\s*$/, "");
 
-    // Add the "Order type" summary to the payload at the top
-    payload.orderType = orderType;
+    // Construct the payload with orderType first
+    const payload = {
+      orderType: orderType, // Add orderType at the top
+      ...Object.fromEntries(formData.entries()), // Add the rest of the form data
+    };
 
     // Remove unnecessary fields from the payload
     delete payload.boxQuantity; // Remove boxQuantity since it’s reflected in orderType
-    delete payload.designType; // Ensure designType is removed entirely
 
     // Output the "Order type" at the top of the form submission (for debugging or user confirmation)
-    console.log(orderType);
+    console.log(payload.orderType);
 
     try {
       // Replace with your backend server URL
