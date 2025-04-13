@@ -407,106 +407,56 @@ logos.forEach((src, index) => {
       wrapper.appendChild(checkbox);
       logosGallery.appendChild(wrapper);
     });
+// Add this code inside your existing <script> tag
+document.addEventListener("DOMContentLoaded", () => {
+  // Reference to the product box quantity input field
+  const productBoxQuantityInput = document.getElementById("box-quantity");
+  const productsContainer = document.createElement("div");
+  productsContainer.id = "products-container";
+  productsContainer.style.marginTop = "20px";
 
-   document.addEventListener("DOMContentLoaded", () => {
-    const productBoxQuantity = document.getElementById("product-box-quantity");
-    const productsContainer = document.createElement("div");
-    productsContainer.id = "products-container";
-    productsContainer.style.display = "none";
+  // Insert the products container just above the submit button
+  const submitButton = document.querySelector("button[type='submit']");
+  if (submitButton) {
+    submitButton.insertAdjacentElement("beforebegin", productsContainer);
+  }
 
-    const addedDropdowns = new Set(); // Track added dropdowns
+  // Function to update product fields based on product box quantity
+  function updateProductFields() {
+    const quantity = parseInt(productBoxQuantityInput.value, 10) || 0; // Get the value, default to 0
+    const currentFields = productsContainer.querySelectorAll(".product-field").length;
 
-    // Function to add a product input field
-    function addProductField() {
-      const currentProductCount = productsContainer.querySelectorAll(".product-field").length + 1;
+    // If the quantity is greater, add fields
+    if (quantity > currentFields) {
+      for (let i = currentFields + 1; i <= quantity; i++) {
+        const productFieldWrapper = document.createElement("div");
+        productFieldWrapper.id = `product-${i}`;
+        productFieldWrapper.classList.add("product-field");
+        productFieldWrapper.style.marginBottom = "10px";
 
-      const productFieldWrapper = document.createElement("div");
-      productFieldWrapper.id = `product-${currentProductCount}`;
-      productFieldWrapper.classList.add("product-field");
+        productFieldWrapper.innerHTML = `
+          <label for="product-${i}-name">Product ${i}:</label>
+          <input type="text" id="product-${i}-name" name="products[]" placeholder="Enter product name">
+        `;
 
-      productFieldWrapper.innerHTML = `
-        <label for="product-${currentProductCount}-name">Product ${currentProductCount}:</label>
-        <input type="text" id="product-${currentProductCount}-name" name="products[]" placeholder="Enter product name">
-        <button type="button" class="remove-product-button" onclick="removeProductField(${currentProductCount})">Remove</button>
-      `;
-
-      productsContainer.appendChild(productFieldWrapper);
+        productsContainer.appendChild(productFieldWrapper);
+      }
     }
 
-    // Function to remove a product input field
-    window.removeProductField = function (productId) {
-      const fieldToRemove = document.getElementById(`product-${productId}`);
-      if (fieldToRemove) {
-        fieldToRemove.remove();
-      }
-    };
-
-    const addProductButton = document.createElement("button");
-    addProductButton.type = "button";
-    addProductButton.textContent = "Add Product";
-    addProductButton.onclick = addProductField;
-    productBoxQuantity.insertAdjacentElement("afterend", productsContainer);
-    productsContainer.insertAdjacentElement("beforeend", addProductButton);
-
-    function handleDesignTypeChange() {
-      const designTypeDropdowns = document.querySelectorAll(".design-type-dropdown");
-      const hasProductBox = Array.from(designTypeDropdowns).some(
-        (dropdown) => dropdown.value === "product-box"
-      );
-
-      if (hasProductBox) {
-        productBoxQuantity.style.display = "block";
-        productsContainer.style.display = "block";
-      } else {
-        productBoxQuantity.style.display = "none";
-        productsContainer.style.display = "none";
-
-        while (productsContainer.firstChild && productsContainer.firstChild.id !== addProductButton.id) {
-          productsContainer.firstChild.remove();
+    // If the quantity is smaller, remove extra fields
+    if (quantity < currentFields) {
+      for (let i = currentFields; i > quantity; i--) {
+        const fieldToRemove = document.getElementById(`product-${i}`);
+        if (fieldToRemove) {
+          fieldToRemove.remove();
         }
       }
     }
+  }
 
-    document.querySelector(".design-type-dropdown").addEventListener("change", handleDesignTypeChange);
-
-    // Add Design Type Button
-    const addDesignTypeButton = document.getElementById("add-design-type");
-
-    // Prevent duplicate event listeners
-    addDesignTypeButton.removeEventListener("click", handleAddDesignType);
-    addDesignTypeButton.addEventListener("click", handleAddDesignType);
-
-    function handleAddDesignType() {
-      const id = `design-type-${Date.now()}`;
-
-      // Check if the ID is already in the set
-      if (addedDropdowns.has(id)) {
-        console.log("Dropdown already added. Skipping creation.");
-        return;
-      }
-
-      const newDropdown = document.createElement("div");
-      newDropdown.classList.add("dynamic-section");
-      newDropdown.innerHTML = `
-        <label for="${id}">Design Type:</label>
-        <select id="${id}" name="designType" class="design-type-dropdown" required>
-          <option value="banner">Banner</option>
-          <option value="logo">Logo</option>
-          <option value="calling-card">Calling Card</option>
-          <option value="product-box">Product Box</option>
-        </select>
-      `;
-      document.getElementById("design-types-container").appendChild(newDropdown);
-
-      // Attach change listener to the new dropdown
-      newDropdown.querySelector(".design-type-dropdown").addEventListener("change", handleDesignTypeChange);
-
-      // Add the ID to the set
-      addedDropdowns.add(id);
-    }
-  });
-
-
+  // Attach event listener to update product fields in real time
+  productBoxQuantityInput.addEventListener("input", updateProductFields);
+});
 
   document.getElementById("order-form").addEventListener("submit", async (e) => {
     e.preventDefault();
