@@ -415,23 +415,22 @@ logos.forEach((src, index) => {
     productsContainer.style.display = "none"; // Initially hidden
 
     let productCount = 0;
+// Function to add product box field
+function addProductField() {
+  const currentProductCount = productsContainer.querySelectorAll(".product-field").length + 1;
 
-    // Function to add a product input field
-    function addProductField() {
-      productCount++;
+  const productFieldWrapper = document.createElement("div");
+  productFieldWrapper.id = `product-${currentProductCount}`;
+  productFieldWrapper.classList.add("product-field");
 
-      const productFieldWrapper = document.createElement("div");
-      productFieldWrapper.id = `product-${productCount}`;
-      productFieldWrapper.classList.add("product-field");
+  productFieldWrapper.innerHTML = `
+    <label for="product-${currentProductCount}-name">Product ${currentProductCount}:</label>
+    <input type="text" id="product-${currentProductCount}-name" name="products[]" placeholder="Enter product name">
+    <button type="button" class="remove-product-button" onclick="removeProductField(${currentProductCount})">Remove</button>
+  `;
 
-      productFieldWrapper.innerHTML = `
-        <label for="product-${productCount}-name">Product ${productCount}:</label>
-        <input type="text" id="product-${productCount}-name" name="products[]" placeholder="Enter product name">
-        <button type="button" class="remove-product-button" onclick="removeProductField(${productCount})">Remove</button>
-      `;
-
-      productsContainer.appendChild(productFieldWrapper);
-    }
+  productsContainer.appendChild(productFieldWrapper);
+}
 
     // Function to remove a product input field
     window.removeProductField = function(productId) {
@@ -471,27 +470,8 @@ logos.forEach((src, index) => {
         productCount = 0;
       }
     }
+});
 
-    // Attach the change event listener to all dropdowns
-    document.querySelector(".design-type-dropdown").addEventListener("change", handleDesignTypeChange);
-
-    const addDesignTypeButton = document.getElementById("add-design-type");
-    addDesignTypeButton.addEventListener("click", () => {
-      const newDropdown = document.createElement("div");
-      newDropdown.classList.add("dynamic-section");
-      newDropdown.innerHTML = `
-        <label for="design-type-${productCount + 1}">Design Type:</label>
-        <select id="design-type-${productCount + 1}" name="designType" class="design-type-dropdown" required>
-          <option value="banner">Banner</option>
-          <option value="logo">Logo</option>
-          <option value="calling-card">Calling Card</option>
-          <option value="product-box">Product Box</option>
-        </select>
-      `;
-      document.getElementById("design-types-container").appendChild(newDropdown);
-      newDropdown.querySelector(".design-type-dropdown").addEventListener("change", handleDesignTypeChange);
-    });
-  });
 
 
   document.getElementById("order-form").addEventListener("submit", async (e) => {
