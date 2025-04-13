@@ -409,13 +409,14 @@ logos.forEach((src, index) => {
     });
 
    document.addEventListener("DOMContentLoaded", () => {
-    // Reference to the product box quantity input field
     const productBoxQuantity = document.getElementById("product-box-quantity");
     const productsContainer = document.createElement("div");
     productsContainer.id = "products-container";
-    productsContainer.style.display = "none"; // Initially hidden
+    productsContainer.style.display = "none";
 
-    // Function to dynamically add product input fields
+    const addedDropdowns = new Set(); // Track added dropdowns
+
+    // Function to add a product input field
     function addProductField() {
       const currentProductCount = productsContainer.querySelectorAll(".product-field").length + 1;
 
@@ -432,7 +433,7 @@ logos.forEach((src, index) => {
       productsContainer.appendChild(productFieldWrapper);
     }
 
-    // Function to dynamically remove a product input field by its ID
+    // Function to remove a product input field
     window.removeProductField = function (productId) {
       const fieldToRemove = document.getElementById(`product-${productId}`);
       if (fieldToRemove) {
@@ -440,17 +441,13 @@ logos.forEach((src, index) => {
       }
     };
 
-    // Button to add product input fields dynamically
     const addProductButton = document.createElement("button");
     addProductButton.type = "button";
     addProductButton.textContent = "Add Product";
     addProductButton.onclick = addProductField;
-
-    // Append the products container and the add product button after the product box quantity input
     productBoxQuantity.insertAdjacentElement("afterend", productsContainer);
     productsContainer.insertAdjacentElement("beforeend", addProductButton);
 
-    // Handle changes to the Design Type dropdown to show/hide product fields
     function handleDesignTypeChange() {
       const designTypeDropdowns = document.querySelectorAll(".design-type-dropdown");
       const hasProductBox = Array.from(designTypeDropdowns).some(
@@ -464,17 +461,48 @@ logos.forEach((src, index) => {
         productBoxQuantity.style.display = "none";
         productsContainer.style.display = "none";
 
-        // Clear all product input fields when "Product Box" is deselected
         while (productsContainer.firstChild && productsContainer.firstChild.id !== addProductButton.id) {
           productsContainer.firstChild.remove();
         }
       }
     }
 
-    // Attach the change event listener to the initial Design Type dropdown
-    const initialDesignTypeDropdown = document.querySelector(".design-type-dropdown");
-    if (initialDesignTypeDropdown) {
-      initialDesignTypeDropdown.addEventListener("change", handleDesignTypeChange);
+    document.querySelector(".design-type-dropdown").addEventListener("change", handleDesignTypeChange);
+
+    // Add Design Type Button
+    const addDesignTypeButton = document.getElementById("add-design-type");
+
+    // Prevent duplicate event listeners
+    addDesignTypeButton.removeEventListener("click", handleAddDesignType);
+    addDesignTypeButton.addEventListener("click", handleAddDesignType);
+
+    function handleAddDesignType() {
+      const id = `design-type-${Date.now()}`;
+
+      // Check if the ID is already in the set
+      if (addedDropdowns.has(id)) {
+        console.log("Dropdown already added. Skipping creation.");
+        return;
+      }
+
+      const newDropdown = document.createElement("div");
+      newDropdown.classList.add("dynamic-section");
+      newDropdown.innerHTML = `
+        <label for="${id}">Design Type:</label>
+        <select id="${id}" name="designType" class="design-type-dropdown" required>
+          <option value="banner">Banner</option>
+          <option value="logo">Logo</option>
+          <option value="calling-card">Calling Card</option>
+          <option value="product-box">Product Box</option>
+        </select>
+      `;
+      document.getElementById("design-types-container").appendChild(newDropdown);
+
+      // Attach change listener to the new dropdown
+      newDropdown.querySelector(".design-type-dropdown").addEventListener("change", handleDesignTypeChange);
+
+      // Add the ID to the set
+      addedDropdowns.add(id);
     }
   });
 
